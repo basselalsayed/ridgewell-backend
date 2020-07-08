@@ -2,14 +2,24 @@ import Sequelize, { DataTypes } from 'sequelize';
 import message from './message';
 import user from './user';
 
-const sequelize = new Sequelize(
-  process.env.DATABASE,
-  process.env.DATABASE_USER,
-  process.env.DATABASE_PASSWORD,
-  {
+let sequelize;
+if (process.env.DATABASE_URL) {
+  // the application is executed on Heroku ... use the postgres database
+  sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
-  },
-);
+    protocol: 'postgres',
+    logging: true, //false
+  });
+} else {
+  sequelize = new Sequelize(
+    process.env.DATABASE_URL,
+    process.env.DATABASE_USER,
+    process.env.DATABASE_PASSWORD,
+    {
+      dialect: 'postgres',
+    },
+  );
+}
 
 const models = {
   User: user(sequelize, DataTypes),

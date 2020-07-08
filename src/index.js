@@ -1,3 +1,5 @@
+'use strict';
+
 import 'dotenv/config';
 import cors from 'cors';
 import express from 'express';
@@ -30,13 +32,16 @@ app.use('/messages', routes.message);
 
 const eraseDatabaseOnSync = true;
 
-sequelize.sync({ force: eraseDatabaseOnSync }).then(async () => {
-  if (eraseDatabaseOnSync) createUsersWithMessages();
+sequelize
+  .sync({ force: eraseDatabaseOnSync })
+  .then(async () => {
+    if (eraseDatabaseOnSync) createUsersWithMessages();
 
-  app.listen(process.env.PORT, () =>
-    console.log(`Example app listening on port ${process.env.PORT}!`),
-  );
-});
+    app.listen(process.env.PORT, () =>
+      console.log(`Example app listening on port ${process.env.PORT}!`),
+    );
+  })
+  .catch(err => console.error(err));
 
 const createUsersWithMessages = async () => {
   await models.User.create(
