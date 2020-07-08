@@ -1,6 +1,7 @@
 import Sequelize, { DataTypes } from 'sequelize';
 import message from './message';
 import user from './user';
+import role from './role';
 
 let sequelize;
 if (process.env.DATABASE_URL) {
@@ -12,7 +13,7 @@ if (process.env.DATABASE_URL) {
   });
 } else {
   sequelize = new Sequelize(
-    process.env.DATABASE_URL,
+    process.env.DATABASE,
     process.env.DATABASE_USER,
     process.env.DATABASE_PASSWORD,
     {
@@ -24,14 +25,15 @@ if (process.env.DATABASE_URL) {
 const models = {
   User: user(sequelize, DataTypes),
   Message: message(sequelize, DataTypes),
+  Role: role(sequelize, DataTypes),
 };
 
 Object.keys(models).forEach(key => {
-  if ('associate' in models[key]) {
-    models[key].associate(models);
-  }
+  if ('associate' in models[key]) models[key].associate(models);
 });
 
-export { sequelize };
+const ROLES = ['user', 'admin'];
+
+export { sequelize, ROLES };
 
 export default models;
