@@ -1,6 +1,4 @@
-import models from '../../models';
-
-var jwt = require('jsonwebtoken');
+import { sign } from 'jsonwebtoken';
 
 const noUser = res => res.status(404).send({ message: 'User not found.' });
 
@@ -11,31 +9,30 @@ const invalidPass = res =>
   });
 
 const getAccessToken = id =>
-  jwt.sign({ id }, process.env.MY_SECRET, {
+  sign({ id }, process.env.MY_SECRET, {
     expiresIn: 86400, // 24 hours
   });
 
-const prepareResponse = user => {
+const validPass = (res, user) => {
   let accessToken = getAccessToken(user.id);
 
   let roles = [];
 
   user
     .getRoles()
-    .then(dbRoles =>
-      dbRoles.forEach(role => roles.push('ROLE_' + role.name.toUpperCase())),
-    );
-
-  return {
-    id: user.id,
-    username: user.username,
-    email: user.email,
-    roles,
-    accessToken,
-  };
+    .then(dbRoles => {
+      dbRoles.forEach(role => roles.push(`ROLE_${role.name.toUpperCase()}`));
+      return {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        roles,
+        accessToken,
+      };
+    })
+    .then(obj => sendRes(res, obj));
 };
 
-const validPass = async (res, user) =>
-  res.status(200).send(await prepareResponse(user));
+const sendRes = (res, obj) => res.status(200).send(obj);
 
 export { invalidPass, noUser, validPass };
