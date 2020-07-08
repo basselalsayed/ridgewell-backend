@@ -18,7 +18,9 @@
     "url": "https://github.com/basselalsayed/ridgewell-backend/issues"
   },
   "homepage": "https://github.com/basselalsayed/ridgewell-backend#readme",
-  "dependencies": {},
+  "dependencies": {
+    "dotenv": "^8.2.0"
+  },
   "devDependencies": {
     "@babel/core": "^7.10.4",
     "@babel/node": "^7.10.4",
