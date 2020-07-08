@@ -1,12 +1,17 @@
-import models, { sequelize } from '../models';
-import { Sequelize } from 'sequelize';
+import models from '../models';
 
-var jwt = require('jsonwebtoken');
+import {
+  handleError,
+  handleRole,
+  invalidPass,
+  noUser,
+  registerSuccess,
+  validPass,
+} from './helpers';
+
 var bcrypt = require('bcryptjs');
 
-const Op = Sequelize.Op;
-const User = models.User;
-const Role = models.Role;
+const { User } = models;
 
 const signUp = (req, res) => {
   // Save User to Database
@@ -16,75 +21,24 @@ const signUp = (req, res) => {
     email: email,
     password: bcrypt.hashSync(password, 8),
   })
-    .then(user => {
-      roles
-        ? Role.findAll({
-            where: {
-              name: {
-                [Op.or]: roles,
-              },
-            },
-          }).then(roles => {
-            user.setRoles(roles).then(() => {
-              res.send({ message: 'User was registered successfully!' });
-            });
-          })
-        : // user role = 1
-          user.setRoles([1]).then(() => {
-            res.send({ message: 'User was registered successfully!' });
-          });
-    })
-    .catch(err => {
-      res.status(500).send({ message: err.message });
-    });
+    .then(user => handleRole(user, roles))
+    .then(() => registerSuccess(res))
+    .catch(err => handleError(res, err));
 };
 
 const signIn = (req, res) => {
-  const login = req.body.username || req.body.email;
-  // User.findOne({
-  //   where: {
-  //     [Op.or]: [{ username: login }, { email: login }],
-  //   },
-  // })
+  const { username, email, password } = req.body;
+  const login = username || email;
+
   User.findByLogin(login)
-    .then(user => {
-      if (!user) {
-        return res.status(404).send({ message: 'User Not found.' });
-      }
-
-      var passwordIsValid = bcrypt.compareSync(
-        req.body.password,
-        user.password,
-      );
-
-      if (!passwordIsValid) {
-        return res.status(401).send({
-          accessToken: null,
-          message: 'Invalid Password!',
-        });
-      }
-
-      var token = jwt.sign({ id: user.id }, process.env.MY_SECRET, {
-        expiresIn: 86400, // 24 hours
-      });
-
-      var authorities = [];
-      user.getRoles().then(roles => {
-        for (let i = 0; i < roles.length; i++) {
-          authorities.push('ROLE_' + roles[i].name.toUpperCase());
-        }
-        res.status(200).send({
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          roles: authorities,
-          accessToken: token,
-        });
-      });
-    })
-    .catch(err => {
-      res.status(500).send({ message: err.message });
-    });
+    .then(user =>
+      user
+        ? bcrypt.compareSync(password, user.password)
+          ? validPass(res, user)
+          : invalidPass(res)
+        : noUser(res),
+    )
+    .catch(err => handleError(res, err));
 };
 
 export { signIn, signUp };
