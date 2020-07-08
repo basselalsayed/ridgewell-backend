@@ -10,6 +10,10 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cors());
 
+app.use((req, res, next) => {
+  req.user = users[1];
+  next();
+});
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
@@ -69,6 +73,16 @@ app.post('/messages', (req, res) => {
 
   return res.send(message);
 });
+
+app.delete('/messages/:messageId', (req, res) => {
+  const { [req.params.messageId]: message, ...otherMessages } = messages;
+
+  messages = otherMessages;
+
+  return res.send(message);
+});
+
+app.get('/session', (req, res) => res.send(users[req.user.id]));
 
 app.listen(process.env.PORT, () =>
   console.log(`Example app listening on port ${process.env.PORT}!`),
