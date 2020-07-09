@@ -1,3 +1,4 @@
+export * from './finders';
 export * from './signUp';
 export * from './signIn';
 

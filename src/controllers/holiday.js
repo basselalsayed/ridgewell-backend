@@ -44,7 +44,7 @@ const newHoliday = async (req, res) => {
           holiday: await req.context.models.Holiday.create({
             from: req.body.from,
             until: req.body.until,
-            userId: req.body.userId,
+            userId: req.userId,
           }),
         }),
   );
