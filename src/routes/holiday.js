@@ -2,13 +2,10 @@
 
 import { Router } from 'express';
 import { verifyToken, isAdmin } from '../middleware';
-
+import { getAll } from '../controllers';
 const router = Router();
 
-router.get('/', [verifyToken], async (req, res) => {
-  const holidays = await req.context.models.Holiday.findAll();
-  return res.send(holidays);
-});
+router.get('/', [verifyToken], getAll);
 
 router.get('/:holidayId', [verifyToken], async (req, res) => {
   const holiday = await req.context.models.Holiday.findByPk(
