@@ -1,6 +1,7 @@
 import 'regenerator-runtime/runtime.js';
 
 import HolidayModel from '../src/models/holiday';
+import HolidayRequestModel from '../src/models/holidayRequest';
 import UserModel from '../src/models/User';
 import chai, { expect } from 'chai';
 import {
@@ -15,10 +16,11 @@ import sinonChai from 'sinon-chai';
 
 chai.use(sinonChai);
 
-describe('src/models/Holiday', () => {
-  const [Holiday, User] = [
+describe('src/models/holiday', () => {
+  const [Holiday, User, HolidayRequest] = [
     HolidayModel(sequelize, dataTypes),
     UserModel(sequelize, dataTypes),
+    HolidayRequestModel(sequelize, dataTypes),
   ];
 
   const holiday = new Holiday();
@@ -31,11 +33,25 @@ describe('src/models/Holiday', () => {
 
   context('associations', () => {
     before(() => {
-      Holiday.associate({ User });
+      Holiday.associate({ User, HolidayRequest });
     });
 
     it('defined a belongsTo association with User', () => {
-      expect(Holiday.belongsTo).to.have.been.calledWith(User);
+      expect(Holiday.belongsTo).to.have.been.calledWith(User, {
+        foreignKey: {
+          name: 'userId',
+          allowNull: false,
+        },
+      });
+    });
+    it('defined a hasMany association with HolidayRequest', () => {
+      expect(Holiday.hasMany).to.have.been.calledWith(HolidayRequest, {
+        foreignKey: {
+          name: 'holidayId',
+          allowNull: false,
+        },
+        onDelete: 'CASCADE',
+      });
     });
   });
 });
