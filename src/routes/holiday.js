@@ -2,29 +2,14 @@
 
 import { Router } from 'express';
 import { verifyToken, isAdmin } from '../middleware';
-import { getAll } from '../controllers';
+import { getAll, getOne, updateHoliday } from '../controllers';
 const router = Router();
 
 router.get('/', [verifyToken], getAll);
 
-router.get('/:holidayId', [verifyToken], async (req, res) => {
-  const holiday = await req.context.models.Holiday.findByPk(
-    req.params.holidayId,
-  );
-  return res.send({ holiday });
-});
+router.get('/:holidayId', [verifyToken], getOne);
 
-router.put('/:holidayId', [verifyToken, isAdmin], async (req, res) => {
-  await req.context.models.Holiday.update(
-    { ...req.body.holiday },
-    {
-      where: { id: req.params.holidayId },
-    },
-  )
-    .then(holiday => holiday && res.status(200).send({ message: 'Success' }))
-    .catch(err => res.status(500).send({ message: err.message }));
-  return res.send(holiday);
-});
+router.put('/:holidayId', [verifyToken, isAdmin], updateHoliday);
 
 router.post('/', [verifyToken], async (req, res) => {
   const holiday = await req.context.models.Holiday.create({
