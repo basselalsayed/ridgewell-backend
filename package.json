@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "babel-node src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --require @babel/register 'spec/**/**spec.js'"
   },
   "repository": {
     "type": "git",
@@ -32,6 +32,13 @@
     "uuid": "^8.2.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "@babel/register": "^7.10.4",
+    "chai": "^4.2.0",
+    "mocha": "^8.0.1",
+    "nodemon": "^2.0.4",
+    "regenerator-runtime": "^0.13.5",
+    "sequelize-test-helpers": "^1.2.3",
+    "sinon": "^9.0.2",
+    "sinon-chai": "^3.5.0"
   }
 }
