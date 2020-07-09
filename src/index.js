@@ -36,7 +36,7 @@ app.get('/', (req, res) => {
 
 app.use('/session', routes.session);
 app.use('/users', routes.user);
-app.use('/messages', routes.message);
+app.use('/holiday', routes.holiday);
 
 const eraseDatabaseOnSync = true;
 
@@ -62,21 +62,20 @@ const initial = async () => {
     name: 'admin',
   });
 
-  await models.User.create(
-    {
-      username: 'rwieruch',
-      email: 'rwieruch',
-      password: '000000',
-      // messages: [
-      //   {
-      //     text: 'Published the Road to learn React',
-      //   },
-      // ],
-    },
-    // {
-    //   include: [models.Message],
+  await models.User.create({
+    username: 'rwieruch',
+    email: 'rwieruch',
+    password: '000000',
+    //   holidays: [
+    //     {
+    //       from: new Date().getDate(),
+    //       until: new Date('20/07/2020').getDate(),
+    //     },
+    //   ],
     // },
-  );
+    // {
+    //   include: [models.Holiday],
+  });
   await models.User.create(
     {
       username: 'ddavids',

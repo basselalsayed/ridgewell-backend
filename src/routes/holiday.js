@@ -5,29 +5,34 @@ import { verifyToken, isAdmin } from '../middleware';
 
 const router = Router();
 
-router.get('/', async (req, res) => {
+router.get('/', [verifyToken], async (req, res) => {
   const holidays = await req.context.models.Holiday.findAll();
   return res.send(holidays);
 });
 
-router.get('/:holidayId', async (req, res) => {
+router.get('/:holidayId', [verifyToken], async (req, res) => {
   const holiday = await req.context.models.Holiday.findByPk(
     req.params.holidayId,
   );
-  return res.send(holiday);
+  return res.send({ holiday });
 });
 
-router.update('/:holidayId', [verifyToken, isAdmin], async (req, res) => {
-  const holiday = await req.context.models.Holiday.findByPk(
-    req.params.holidayId,
-  );
+router.put('/:holidayId', [verifyToken, isAdmin], async (req, res) => {
+  await req.context.models.Holiday.update(
+    { ...req.body.holiday },
+    {
+      where: { id: req.params.holidayId },
+    },
+  )
+    .then(holiday => holiday && res.status(200).send({ message: 'Success' }))
+    .catch(err => res.status(500).send({ message: err.message }));
   return res.send(holiday);
 });
 
 router.post('/', [verifyToken], async (req, res) => {
   const holiday = await req.context.models.Holiday.create({
     from: req.body.from,
-    until: req.body.from,
+    until: req.body.until,
     userId: req.body.userId,
   });
 
@@ -35,11 +40,9 @@ router.post('/', [verifyToken], async (req, res) => {
 });
 
 router.delete('/:messageId', async (req, res) => {
-  const result = await req.context.models.Message.destroy({
+  await req.context.models.Message.destroy({
     where: { id: req.params.messageId },
-  });
-
-  return res.send(true);
+  }).on('success', () => res.send(true));
 });
 
 export default router;

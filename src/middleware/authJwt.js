@@ -29,16 +29,12 @@ const isAdmin = (req, res, next) => {
       .getRoles()
       .then(roles => {
         roles.forEach(role => {
-          if (role.name === 'admin') {
-            next();
-            return;
-          }
+          return role.name === 'admin'
+            ? next()
+            : res.status(403).send({
+                message: 'Require Admin Role!',
+              });
         });
-
-        res.status(403).send({
-          message: 'Require Admin Role!',
-        });
-        return;
       })
       .catch(err =>
         res.status(403).send({
