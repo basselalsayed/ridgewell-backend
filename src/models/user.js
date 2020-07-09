@@ -29,7 +29,13 @@ const user = (sequelize, DataTypes) => {
   });
 
   User.associate = models => {
-    User.hasMany(models.Holiday, { onDelete: 'CASCADE' });
+    User.hasMany(models.Holiday, {
+      foreignKey: {
+        name: 'userId',
+        allowNull: false,
+      },
+      onDelete: 'CASCADE',
+    });
   };
 
   User.associate = models => {
