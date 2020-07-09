@@ -1,5 +1,5 @@
 import Sequelize, { DataTypes } from 'sequelize';
-import message from './message';
+import holiday from './holiday';
 import user from './user';
 import role from './role';
 
@@ -24,7 +24,7 @@ if (process.env.DATABASE_URL) {
 
 const models = {
   User: user(sequelize, DataTypes),
-  Message: message(sequelize, DataTypes),
+  Holiday: holiday(sequelize, DataTypes),
   Role: role(sequelize, DataTypes),
 };
 
