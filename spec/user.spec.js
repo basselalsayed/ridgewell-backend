@@ -1,6 +1,8 @@
 import 'regenerator-runtime/runtime.js';
 
 import UserModel from '../src/models/user';
+import HolidayModel from '../src/models/holiday';
+import HolidayRequestModel from '../src/models/holidayRequest';
 import RoleModel from '../src/models/role';
 import chai, { expect } from 'chai';
 import {
@@ -16,8 +18,10 @@ import sinonChai from 'sinon-chai';
 chai.use(sinonChai);
 
 describe('src/models/User', () => {
-  const [User, Role] = [
+  const [User, Holiday, HolidayRequest, Role] = [
     UserModel(sequelize, dataTypes),
+    HolidayModel(sequelize, dataTypes),
+    HolidayRequestModel(sequelize, dataTypes),
     RoleModel(sequelize, dataTypes),
   ];
 
@@ -30,7 +34,35 @@ describe('src/models/User', () => {
 
   context('associations', () => {
     before(() => {
-      User.associate({ Role });
+      User.associate({ Holiday, HolidayRequest, Role });
+    });
+
+    it('defined a hasMany association with Holiday', () => {
+      expect(User.hasMany).to.have.been.calledWith(Holiday, {
+        foreignKey: {
+          name: 'userId',
+          allowNull: false,
+        },
+        onDelete: 'CASCADE',
+      });
+    });
+
+    it('defined a hasMany association with HolidayRequest', () => {
+      expect(User.hasMany).to.have.been.calledWith(HolidayRequest, {
+        foreignKey: {
+          name: 'userId',
+          allowNull: false,
+        },
+        onDelete: 'CASCADE',
+      });
+    });
+    it('defined a second hasMany association with HolidayRequest', () => {
+      expect(User.hasMany).to.have.been.calledWith(HolidayRequest, {
+        foreignKey: {
+          name: 'approvedBy',
+          allowNull: true,
+        },
+      });
     });
 
     it('defined a belongsTo association with Role', () => {

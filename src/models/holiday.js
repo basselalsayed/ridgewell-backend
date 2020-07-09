@@ -24,8 +24,21 @@ const holiday = (sequelize, DataTypes) => {
     },
   });
 
-  Holiday.associate = models => {
-    Holiday.belongsTo(models.User);
+  Holiday.associate = ({ HolidayRequest, User }) => {
+    Holiday.hasMany(HolidayRequest, {
+      foreignKey: {
+        name: 'holidayId',
+        allowNull: false,
+      },
+      onDelete: 'CASCADE',
+    });
+
+    Holiday.belongsTo(User, {
+      foreignKey: {
+        name: 'userId',
+        allowNull: false,
+      },
+    });
   };
 
   return Holiday;

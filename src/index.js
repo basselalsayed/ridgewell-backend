@@ -62,36 +62,31 @@ const initial = async () => {
     name: 'admin',
   });
 
-  await models.User.create({
-    username: 'rwieruch',
-    email: 'rwieruch',
-    password: '000000',
-    //   holidays: [
-    //     {
-    //       from: new Date().getDate(),
-    //       until: new Date('20/07/2020').getDate(),
-    //     },
-    //   ],
-    // },
-    // {
-    //   include: [models.Holiday],
-  });
   await models.User.create(
     {
-      username: 'ddavids',
-      email: 'ddavids',
+      username: 'admin',
+      email: 'admin',
       password: '000000',
-      // messages: [
-      //   {
-      //     text: 'Happy to release ...',
-      //   },
-      //   {
-      //     text: 'Published a complete ...',
-      //   },
-      // ],
+      holidays: [
+        {
+          from: '2020-07-20',
+          until: '2020-07-30',
+          userId: '1',
+        },
+      ],
     },
-    // {
-    //   include: [models.Message],
-    // },
+    { include: [models.Holiday] },
   );
+
+  await models.HolidayRequest.create({
+    type: 'delete',
+    holidayId: '1',
+    userId: 1,
+  });
+
+  await models.User.create({
+    username: 'user',
+    email: 'user',
+    password: '000000',
+  });
 };

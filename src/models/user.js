@@ -28,12 +28,31 @@ const user = (sequelize, DataTypes) => {
     },
   });
 
-  User.associate = models => {
-    User.hasMany(models.Holiday, { onDelete: 'CASCADE' });
-  };
+  User.associate = ({ Holiday, HolidayRequest, Role }) => {
+    User.hasMany(Holiday, {
+      foreignKey: {
+        name: 'userId',
+        allowNull: false,
+      },
+      onDelete: 'CASCADE',
+    });
 
-  User.associate = models => {
-    User.belongsToMany(models.Role, {
+    User.hasMany(HolidayRequest, {
+      foreignKey: {
+        name: 'userId',
+        allowNull: false,
+      },
+      onDelete: 'CASCADE',
+    });
+
+    User.hasMany(HolidayRequest, {
+      foreignKey: {
+        name: 'approvedBy',
+        allowNull: true,
+      },
+    });
+
+    User.belongsToMany(Role, {
       through: 'user_roles',
       foreignKey: 'userId',
       otherKey: 'roleId',
