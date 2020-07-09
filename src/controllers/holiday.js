@@ -1,4 +1,4 @@
-import { handleError } from './helpers';
+import { handleError, send200, send500 } from './helpers';
 import { Sequelize } from 'sequelize';
 const Op = Sequelize.Op;
 const getAll = async (req, res) =>
@@ -16,9 +16,7 @@ const updateHoliday = async (req, res) => {
       where: { id: req.params.holidayId },
     },
   )
-    .then(
-      holiday => holiday[0] > 0 && res.status(200).send({ message: 'Success' }),
-    )
+    .then(holiday => holiday[0] > 0 && send200(res, { message: 'Success' }))
     .catch(err => handleError(err));
 };
 
@@ -40,8 +38,8 @@ const newHoliday = async (req, res) => {
 
   await req.context.models.Holiday.findAll({ where }).then(async response =>
     response.length
-      ? res.status(500).send({ message: 'Holiday already present' })
-      : res.status(200).send({
+      ? send500(res, { message: 'Holiday already present' })
+      : send200(res, {
           holiday: await req.context.models.Holiday.create({
             from: req.body.from,
             until: req.body.until,
@@ -57,8 +55,8 @@ const deleteHoliday = async (req, res) =>
   })
     .then(holiday =>
       holiday
-        ? res.status(200).send({ message: 'Holiday Deleted' })
-        : res.status(500).send({ message: 'Holiday Not Found' }),
+        ? send200(res, { message: 'Holiday Deleted' })
+        : send500(res, { message: 'Holiday Not Found' }),
     )
     .catch(err => handleError(err));
 
