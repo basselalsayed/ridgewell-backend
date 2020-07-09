@@ -28,6 +28,7 @@ describe('src/models/User', () => {
   const user = new User();
 
   checkModelName(User)('user');
+
   context('properties', () => {
     ['username', 'email', 'password'].forEach(checkPropertyExists(user));
   });
@@ -56,6 +57,7 @@ describe('src/models/User', () => {
         onDelete: 'CASCADE',
       });
     });
+
     it('defined a second hasMany association with HolidayRequest', () => {
       expect(User.hasMany).to.have.been.calledWith(HolidayRequest, {
         foreignKey: {

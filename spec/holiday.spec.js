@@ -2,7 +2,7 @@ import 'regenerator-runtime/runtime.js';
 
 import HolidayModel from '../src/models/holiday';
 import HolidayRequestModel from '../src/models/holidayRequest';
-import UserModel from '../src/models/User';
+import UserModel from '../src/models/user';
 import chai, { expect } from 'chai';
 import {
   sequelize,
@@ -44,6 +44,7 @@ describe('src/models/holiday', () => {
         },
       });
     });
+
     it('defined a hasMany association with HolidayRequest', () => {
       expect(Holiday.hasMany).to.have.been.calledWith(HolidayRequest, {
         foreignKey: {

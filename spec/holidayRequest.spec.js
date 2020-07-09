@@ -2,7 +2,7 @@ import 'regenerator-runtime/runtime.js';
 
 import HolidayModel from '../src/models/holiday';
 import HolidayRequestModel from '../src/models/holidayRequest';
-import UserModel from '../src/models/User';
+import UserModel from '../src/models/user';
 import chai, { expect } from 'chai';
 import {
   sequelize,
@@ -32,6 +32,7 @@ describe('src/models/holidayRequest', () => {
       checkPropertyExists(holidayRequest),
     );
   });
+
   context('associations', () => {
     before(() => {
       HolidayRequest.associate({ User, Holiday });
