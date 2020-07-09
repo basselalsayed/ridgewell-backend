@@ -21,4 +21,24 @@ const updateHoliday = async (req, res) => {
     .catch(err => handleError(err));
 };
 
-export { getAll, getOne, updateHoliday };
+const newHoliday = async (req, res) =>
+  res.send({
+    holiday: await req.context.models.Holiday.create({
+      from: req.body.from,
+      until: req.body.until,
+      userId: req.body.userId,
+    }),
+  });
+
+const deleteHoliday = async (req, res) =>
+  await req.context.models.Holiday.destroy({
+    where: { id: req.params.holidayId },
+  })
+    .then(holiday =>
+      holiday
+        ? res.status(200).send({ message: 'Holiday Deleted' })
+        : res.status(500).send({ message: 'Holiday Not Found' }),
+    )
+    .catch(err => handleError(err));
+
+export { deleteHoliday, getAll, getOne, newHoliday, updateHoliday };
