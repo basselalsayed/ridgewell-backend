@@ -1,4 +1,4 @@
-import { send, holidayExists } from './helpers';
+import { send, holidayExists, noHoliday, handleRequest } from './helpers';
 
 const getAllRequests = async (req, res) =>
   send(200, res, {
@@ -18,7 +18,7 @@ const newUpdateRequest = async (req, res) =>
           userId: req.userId,
         }),
       })
-    : send(500, res, { message: 'No Holiday found' });
+    : noHoliday(res);
 
 const newDeleteRequest = async (req, res) =>
   (await holidayExists(req))
@@ -29,6 +29,6 @@ const newDeleteRequest = async (req, res) =>
           userId: req.userId,
         }),
       })
-    : send(500, res, { message: 'No Holiday found' });
+    : noHoliday(res);
 
 export { getAllRequests, newUpdateRequest, newDeleteRequest };

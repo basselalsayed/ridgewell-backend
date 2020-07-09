@@ -1,4 +1,4 @@
-export * from './finders';
+export * from './requests';
 export * from './signUp';
 export * from './signIn';
 
