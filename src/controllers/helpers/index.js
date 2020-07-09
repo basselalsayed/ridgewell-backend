@@ -1,7 +1,11 @@
+export * from './requests';
 export * from './signUp';
 export * from './signIn';
 
-const handleError = (res, err) =>
-  res.status(500).send({ message: err.message });
+const send = (code, res, object) => {
+  res.status(code).send(object);
+};
 
-export { handleError };
+const handleError = (res, err) => send(500, res, { message: err.message });
+
+export { handleError, send };
