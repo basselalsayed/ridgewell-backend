@@ -1,12 +1,13 @@
 import models from '../../models';
 import { Sequelize } from 'sequelize';
+import { send } from '.';
 
 const Op = Sequelize.Op;
 
 const { Role } = models;
 
 const registerSuccess = res =>
-  res.send({ message: 'User was registered successfully!' });
+  send(200, res, { message: 'User was registered successfully!' });
 
 const hasRole = (user, roles) =>
   Role.findAll({

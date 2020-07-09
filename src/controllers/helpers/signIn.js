@@ -1,9 +1,10 @@
 import { sign } from 'jsonwebtoken';
+import { send } from '.';
 
-const noUser = res => res.status(404).send({ message: 'User not found.' });
+const noUser = res => send(401, res, { message: 'User not found.' });
 
 const invalidPass = res =>
-  res.status(401).send({
+  send(401, res, {
     accessToken: null,
     message: 'Invalid Password!',
   });
@@ -30,9 +31,7 @@ const validPass = (res, user) => {
         accessToken,
       };
     })
-    .then(obj => sendRes(res, obj));
+    .then(obj => send(200, res, obj));
 };
-
-const sendRes = (res, obj) => res.status(200).send(obj);
 
 export { invalidPass, noUser, validPass };
