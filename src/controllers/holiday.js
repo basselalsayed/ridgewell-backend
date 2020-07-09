@@ -3,7 +3,7 @@ import { Sequelize } from 'sequelize';
 
 const Op = Sequelize.Op;
 const getAll = async (req, res) =>
-  res.send({ holidays: await req.context.models.Holiday.findAll() });
+  send(200, res, { holidays: await req.context.models.Holiday.findAll() });
 
 const getOne = async (req, res) =>
   send(200, res, {
@@ -38,7 +38,7 @@ const newHoliday = async (req, res) => {
   };
 
   await req.context.models.Holiday.findAll({ where }).then(async response =>
-    response.length
+    response.length === 2
       ? send(500, res, { message: 'Holiday already present' })
       : send(200, res, {
           holiday: await req.context.models.Holiday.create({
