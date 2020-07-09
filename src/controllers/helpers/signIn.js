@@ -1,7 +1,7 @@
 import { sign } from 'jsonwebtoken';
 import { send } from '.';
 
-const noUser = res => send(401, res, { message: 'User not found.' });
+const noUser = res => send(404, res, { message: 'User not found.' });
 
 const invalidPass = res =>
   send(401, res, {

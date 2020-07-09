@@ -39,7 +39,7 @@ const newHoliday = async (req, res) => {
 
   await req.context.models.Holiday.findAll({ where }).then(async response =>
     response.length === 2
-      ? send(500, res, { message: 'Holiday already present' })
+      ? send(500, res, { message: 'Two Staff on Holiday already ' })
       : send(200, res, {
           holiday: await req.context.models.Holiday.create({
             from: req.body.from,
