@@ -9,7 +9,11 @@ import models, { sequelize } from './models';
 
 const app = express();
 
-app.use(cors());
+let corsOptions = {
+  origin: process.env.ORIGIN,
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
