@@ -8,8 +8,7 @@ import {
   registerSuccess,
   validPass,
 } from './helpers';
-
-var bcrypt = require('bcryptjs');
+import { hashSync, compareSync } from 'bcryptjs';
 
 const { User } = models;
 
@@ -19,10 +18,12 @@ const signUp = (req, res) => {
   User.create({
     username: username,
     email: email,
-    password: bcrypt.hashSync(password, 8),
+    password: hashSync(password, 8),
   })
-    .then(user => handleRole(user, roles))
-    .then(() => registerSuccess(res))
+    .then(async user => {
+      await handleRole(user, roles);
+      validPass(res, user);
+    })
     .catch(err => handleError(res, err));
 };
 
@@ -33,7 +34,7 @@ const signIn = (req, res) => {
   User.findByLogin(login)
     .then(user =>
       user
-        ? bcrypt.compareSync(password, user.password)
+        ? compareSync(password, user.password)
           ? validPass(res, user)
           : invalidPass(res)
         : noUser(res),
