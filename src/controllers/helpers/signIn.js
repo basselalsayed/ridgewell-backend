@@ -24,11 +24,14 @@ const validPass = (res, user) => {
     .then(dbRoles => {
       dbRoles.forEach(role => roles.push(`ROLE_${role.name.toUpperCase()}`));
       return {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        roles,
-        accessToken,
+        message: 'Success!',
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          roles,
+          accessToken,
+        },
       };
     })
     .then(obj => send(200, res, obj));

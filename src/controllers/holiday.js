@@ -3,7 +3,19 @@ import { Sequelize } from 'sequelize';
 
 const Op = Sequelize.Op;
 const getAll = async (req, res) =>
-  send(200, res, { holidays: await req.context.models.Holiday.findAll() });
+  send(200, res, {
+    holidays: await req.context.models.Holiday.findAll({
+      attributes: {
+        exclude: ['userId'],
+      },
+      include: [
+        {
+          model: req.context.models.User,
+          attributes: ['username', 'email'],
+        },
+      ],
+    }),
+  });
 
 const getOne = async (req, res) =>
   send(200, res, {

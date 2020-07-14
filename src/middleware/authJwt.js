@@ -7,14 +7,14 @@ const { User } = models;
 const verifyToken = (req, res, next) => {
   let token = req.headers['x-access-token'];
 
-  if (!token)
-    return res.status(403).send({
+  !token &&
+    res.status(403).send({
       message: 'No token provided!',
     });
 
   verify(token, process.env.MY_SECRET, (err, decoded) => {
-    if (err)
-      return res.status(401).send({
+    err &&
+      res.status(401).send({
         message: 'Unauthorized!',
       });
 
@@ -28,13 +28,13 @@ const isAdmin = (req, res, next) => {
     user
       .getRoles()
       .then(roles => {
-        roles.forEach(role => {
-          return role.name === 'admin'
+        roles.forEach(role =>
+          role.name === 'admin'
             ? next()
             : res.status(403).send({
                 message: 'Require Admin Role!',
-              });
-        });
+              }),
+        );
       })
       .catch(err =>
         res.status(403).send({

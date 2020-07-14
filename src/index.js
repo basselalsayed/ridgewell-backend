@@ -6,10 +6,15 @@ import express from 'express';
 
 import routes from './routes';
 import models, { sequelize } from './models';
+import { hashSync } from 'bcryptjs';
 
 const app = express();
 
-app.use(cors());
+let corsOptions = {
+  origin: process.env.ORIGIN,
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -44,7 +49,7 @@ const eraseDatabaseOnSync = true;
 sequelize
   .sync({ force: eraseDatabaseOnSync })
   .then(async () => {
-    if (eraseDatabaseOnSync) initial();
+    eraseDatabaseOnSync && initialize();
 
     app.listen(process.env.PORT, () =>
       console.log(`Example app listening on port ${process.env.PORT}!`),
@@ -52,7 +57,7 @@ sequelize
   })
   .catch(err => console.error(err));
 
-const initial = async () => {
+const initialize = async () => {
   await models.Role.create({
     id: 1,
     name: 'user',
@@ -65,9 +70,9 @@ const initial = async () => {
 
   await models.User.create(
     {
-      username: 'admin',
-      email: 'admin',
-      password: '000000',
+      username: 'bsas',
+      email: 'bsas@ridgewell.co.uk',
+      password: hashSync(process.env.ADMIN_PASS, 8),
       holidays: [
         {
           from: '2020-07-20',
@@ -76,8 +81,8 @@ const initial = async () => {
         },
       ],
     },
-    { include: [models.Holiday] },
-  );
+    { include: [models.Holiday, models.Role] },
+  ).then(user => user.setRoles([2]));
 
   await models.HolidayRequest.create({
     type: 'delete',
@@ -87,7 +92,22 @@ const initial = async () => {
 
   await models.User.create({
     username: 'user',
-    email: 'user',
-    password: '000000',
+    email: 'user@ridgewell.co.uk',
+    password: hashSync('000000', 8),
+  });
+  await models.User.create({
+    username: 'user1',
+    email: 'user1@ridgewell.co.uk',
+    password: hashSync('000000', 8),
+  });
+  await models.User.create({
+    username: 'user2',
+    email: 'user2@ridgewell.co.uk',
+    password: hashSync('000000', 8),
+  });
+  await models.User.create({
+    username: 'user3',
+    email: 'user3@ridgewell.co.uk',
+    password: hashSync('000000', 8),
   });
 };
