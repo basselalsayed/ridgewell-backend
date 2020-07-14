@@ -85,7 +85,7 @@ const initialize = async () => {
           confirmed: true,
         },
       ],
-      // holidayRequests: [{ type: 'delete', holidayId: '1', userId: '1' }],
+      holidayRequests: [{ type: 'delete', holidayId: '1', owner: '1' }],
     },
     { include: [Holiday, HolidayRequest, Role] },
   ).then(user => user.setRoles([2]));
@@ -101,7 +101,7 @@ const initialize = async () => {
           until: '2020-08-30',
         },
       ],
-      // holidayRequests: [{ type: 'new', holidayId: '2', userId: '2' }],
+      holidayRequests: [{ type: 'new', holidayId: '2', owner: '2' }],
     },
     { include: [Holiday, HolidayRequest, Role] },
   );
@@ -119,15 +119,22 @@ const initialize = async () => {
     },
     { include: [Holiday, Role] },
   );
-  await HolidayRequest.create({ type: 'delete', holidayId: '1', userId: '1' });
-  await HolidayRequest.create({ type: 'new', holidayId: '2', userId: '2' });
+
   await HolidayRequest.create({
     type: 'update',
     from: '2020-08-21',
     until: '2020-09-10',
-    userId: '3',
+    owner: '3',
     holidayId: '3',
   });
+
+  await HolidayRequest.findByPk(3).then(hol => {
+    hol.setManagerId([1]);
+    hol.update({
+      resolved: true,
+    });
+  });
+
   await User.create({
     username: 'user2',
     email: 'user2@ridgewell.co.uk',

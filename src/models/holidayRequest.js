@@ -32,20 +32,17 @@ const holidayRequest = (sequelize, DataTypes) => {
     });
     HolidayRequest.belongsTo(User, {
       foreignKey: {
-        name: 'userId',
+        name: 'owner',
         allowNull: false,
-      },
-      foreignKey: {
-        name: 'approvedBy',
-        allowNull: true,
       },
     });
 
-    // HolidayRequest.belongsToMany(User, {
-    //   through: 'approved_requests',
-    //   foreignKey: 'requestId',
-    //   otherKey: 'approvedBy',
-    // });
+    HolidayRequest.belongsToMany(User, {
+      as: 'managerId',
+      through: 'approvedRequests',
+      foreignKey: 'requestId',
+      otherKey: 'managerId',
+    });
   };
 
   return HolidayRequest;

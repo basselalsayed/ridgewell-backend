@@ -38,20 +38,19 @@ const user = (sequelize, DataTypes) => {
     });
 
     User.hasMany(HolidayRequest, {
+      as: 'owner',
       foreignKey: {
-        name: 'userId',
+        name: 'owner',
         allowNull: false,
       },
       onDelete: 'CASCADE',
     });
 
-    User.hasMany(HolidayRequest, {
-      foreignKey: {
-        name: 'approvedBy',
-        allowNull: true,
-      },
+    User.belongsToMany(HolidayRequest, {
+      through: 'approvedRequests',
+      foreignKey: 'managerId',
+      otherKey: 'requestId',
     });
-
     User.belongsToMany(Role, {
       through: 'user_roles',
       foreignKey: 'userId',

@@ -3,15 +3,15 @@ import { send, holidayExists, noHoliday, handleRequest } from './helpers';
 const getAllRequests = async (req, res) =>
   send(200, res, {
     requests: await req.context.models.HolidayRequest.findAll({
-      where: { resolved: false },
+      // where: { resolved: false },
 
       attributes: {
-        exclude: ['userId'],
+        exclude: ['owner'],
       },
       include: [
         {
           model: req.context.models.User,
-          as: ['userId'],
+          as: ['owner'],
           attributes: ['username', 'email'],
         },
       ],

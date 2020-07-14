@@ -9,8 +9,8 @@ const role = (sequelize, DataTypes) => {
     },
   });
 
-  Role.associate = models => {
-    Role.belongsToMany(models.User, {
+  Role.associate = ({ User }) => {
+    Role.belongsToMany(User, {
       through: 'user_roles',
       foreignKey: 'roleId',
       otherKey: 'userId',
