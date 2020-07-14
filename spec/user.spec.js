@@ -50,8 +50,9 @@ describe('src/models/User', () => {
 
     it('defined a hasMany association with HolidayRequest', () => {
       expect(User.hasMany).to.have.been.calledWith(HolidayRequest, {
+        as: 'owner',
         foreignKey: {
-          name: 'userId',
+          name: 'owner',
           allowNull: false,
         },
         onDelete: 'CASCADE',
@@ -59,16 +60,14 @@ describe('src/models/User', () => {
     });
 
     it('defined a second hasMany association with HolidayRequest', () => {
-      expect(User.hasMany).to.have.been.calledWith(HolidayRequest, {
-        foreignKey: {
-          name: 'approvedBy',
-          allowNull: true,
-        },
+      expect(User.belongsToMany).to.have.been.calledWith(HolidayRequest, {
+        through: 'approvedRequests',
+        foreignKey: 'managerId',
+        otherKey: 'requestId',
       });
     });
 
     it('defined a belongsTo association with Role', () => {
-      // expect(User.belongsTo).to.have.been.calledWith(Role);
       expect(User.belongsToMany).to.have.been.calledWith(Role, {
         foreignKey: 'userId',
         otherKey: 'roleId',

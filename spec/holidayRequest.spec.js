@@ -50,13 +50,15 @@ describe('src/models/holidayRequest', () => {
     it('defined a belongsTo association with User', () => {
       expect(HolidayRequest.belongsTo).to.have.been.calledWith(User, {
         foreignKey: {
-          name: 'userId',
+          name: 'owner',
           allowNull: false,
         },
-        foreignKey: {
-          name: 'approvedBy',
-          allowNull: true,
-        },
+      });
+      expect(HolidayRequest.belongsToMany).to.have.been.calledWith(User, {
+        as: 'managerId',
+        through: 'approvedRequests',
+        foreignKey: 'requestId',
+        otherKey: 'managerId',
       });
     });
   });

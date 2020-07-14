@@ -1,7 +1,15 @@
 import { send } from './helpers';
 
 const allAccess = async (req, res) =>
-  send(200, res, await req.context.models.User.findAll());
+  send(
+    200,
+    res,
+    await req.context.models.User.findAll({
+      attributes: {
+        exclude: ['password'],
+      },
+    }),
+  );
 
 const userBoard = (req, res) => send(200, res, 'User Content.');
 
