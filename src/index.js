@@ -71,7 +71,7 @@ const initialize = async () => {
   await models.User.create(
     {
       username: 'bsas',
-      email: 'bsas',
+      email: 'bsas@ridgewell.co.uk',
       password: hashSync(process.env.ADMIN_PASS, 8),
       holidays: [
         {
@@ -92,7 +92,22 @@ const initialize = async () => {
 
   await models.User.create({
     username: 'user',
-    email: 'user',
+    email: 'user@ridgewell.co.uk',
+    password: hashSync('000000', 8),
+  });
+  await models.User.create({
+    username: 'user1',
+    email: 'user1@ridgewell.co.uk',
+    password: hashSync('000000', 8),
+  });
+  await models.User.create({
+    username: 'user2',
+    email: 'user2@ridgewell.co.uk',
+    password: hashSync('000000', 8),
+  });
+  await models.User.create({
+    username: 'user3',
+    email: 'user3@ridgewell.co.uk',
     password: hashSync('000000', 8),
   });
 };
