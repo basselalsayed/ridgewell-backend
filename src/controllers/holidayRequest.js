@@ -4,6 +4,17 @@ const getAllRequests = async (req, res) =>
   send(200, res, {
     requests: await req.context.models.HolidayRequest.findAll({
       where: { resolved: false },
+
+      attributes: {
+        exclude: ['userId'],
+      },
+      include: [
+        {
+          model: req.context.models.User,
+          as: ['userId'],
+          attributes: ['username', 'email'],
+        },
+      ],
     }),
   });
 

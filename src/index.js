@@ -51,24 +51,29 @@ sequelize
   .then(async () => {
     eraseDatabaseOnSync && initialize();
 
-    app.listen(process.env.PORT, () =>
-      console.log(`Example app listening on port ${process.env.PORT}!`),
+    app.listen(
+      process.env.PORT,
+      console.log(
+        '\x1b[36m\n[server]\x1b[0m',
+        `\x1b[33mListening on port ${process.env.PORT}\n\x1b[0m`,
+      ),
     );
   })
   .catch(err => console.error(err));
 
 const initialize = async () => {
-  await models.Role.create({
+  const { Holiday, HolidayRequest, Role, User } = models;
+  await Role.create({
     id: 1,
     name: 'user',
   });
 
-  await models.Role.create({
+  await Role.create({
     id: 2,
     name: 'admin',
   });
 
-  await models.User.create(
+  await User.create(
     {
       username: 'bsas',
       email: 'bsas@ridgewell.co.uk',
@@ -77,35 +82,58 @@ const initialize = async () => {
         {
           from: '2020-07-20',
           until: '2020-07-30',
-          userId: '1',
+          confirmed: true,
+        },
+      ],
+      // holidayRequests: [{ type: 'delete', holidayId: '1', userId: '1' }],
+    },
+    { include: [Holiday, HolidayRequest, Role] },
+  ).then(user => user.setRoles([2]));
+
+  await User.create(
+    {
+      username: 'user',
+      email: 'user@ridgewell.co.uk',
+      password: hashSync('000000', 8),
+      holidays: [
+        {
+          from: '2020-08-20',
+          until: '2020-08-30',
+        },
+      ],
+      // holidayRequests: [{ type: 'new', holidayId: '2', userId: '2' }],
+    },
+    { include: [Holiday, HolidayRequest, Role] },
+  );
+  await User.create(
+    {
+      username: 'user1',
+      email: 'user1@ridgewell.co.uk',
+      password: hashSync('000000', 8),
+      holidays: [
+        {
+          from: '2020-08-15',
+          until: '2020-08-25',
         },
       ],
     },
-    { include: [models.Holiday, models.Role] },
-  ).then(user => user.setRoles([2]));
-
-  await models.HolidayRequest.create({
-    type: 'delete',
-    holidayId: '1',
-    userId: 1,
+    { include: [Holiday, Role] },
+  );
+  await HolidayRequest.create({ type: 'delete', holidayId: '1', userId: '1' });
+  await HolidayRequest.create({ type: 'new', holidayId: '2', userId: '2' });
+  await HolidayRequest.create({
+    type: 'update',
+    from: '2020-08-21',
+    until: '2020-09-10',
+    userId: '3',
+    holidayId: '3',
   });
-
-  await models.User.create({
-    username: 'user',
-    email: 'user@ridgewell.co.uk',
-    password: hashSync('000000', 8),
-  });
-  await models.User.create({
-    username: 'user1',
-    email: 'user1@ridgewell.co.uk',
-    password: hashSync('000000', 8),
-  });
-  await models.User.create({
+  await User.create({
     username: 'user2',
     email: 'user2@ridgewell.co.uk',
     password: hashSync('000000', 8),
   });
-  await models.User.create({
+  await User.create({
     username: 'user3',
     email: 'user3@ridgewell.co.uk',
     password: hashSync('000000', 8),
