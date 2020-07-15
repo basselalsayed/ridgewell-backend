@@ -10,6 +10,11 @@ const getAll = async (req, res) =>
       },
       include: [
         {
+          model: req.context.models.HolidayRequest,
+
+          attributes: ['id', 'type', 'from', 'until', 'resolved'],
+        },
+        {
           model: req.context.models.User,
           attributes: ['username', 'email'],
         },
