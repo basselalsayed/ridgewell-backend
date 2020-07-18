@@ -12,8 +12,8 @@ const router = Router();
 
 router.get('/', [verifyToken, isAdmin], getAllRequests);
 
-router.put('/:holidayId', [verifyToken], newUpdateRequest);
+router.post('/upd/:holidayId', [verifyToken], newUpdateRequest);
 
-router.delete('/:holidayId', [verifyToken], newDeleteRequest);
+router.post('/del/:holidayId', [verifyToken], newDeleteRequest);
 
 export default router;
