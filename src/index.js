@@ -41,7 +41,7 @@ app.get('/', (req, res) => {
 
 app.use('/session', routes.session);
 app.use('/users', routes.user);
-app.use('/holiday', routes.holiday);
+app.use('/holidays', routes.holiday);
 app.use('/requests', routes.holidayRequest);
 
 const eraseDatabaseOnSync = true;
