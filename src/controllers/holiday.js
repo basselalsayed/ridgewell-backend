@@ -5,9 +5,6 @@ const Op = Sequelize.Op;
 const getAll = async (req, res) =>
   send(200, res, {
     holidays: await req.context.models.Holiday.findAll({
-      attributes: {
-        exclude: ['userId'],
-      },
       include: [
         {
           model: req.context.models.HolidayRequest,

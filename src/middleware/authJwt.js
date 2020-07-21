@@ -24,7 +24,7 @@ const verifyToken = (req, res, next) => {
 };
 
 const isAdmin = (req, res, next) => {
-  User.findByPk(req.userId).then(user => {
+  User.findByPk(req.userId).then(user =>
     user
       .getRoles()
       .then(roles => {
@@ -40,8 +40,14 @@ const isAdmin = (req, res, next) => {
         res.status(403).send({
           message: err.message,
         }),
-      );
-  });
+      ),
+  );
 };
 
-export { verifyToken, isAdmin };
+const isOwner = (req, res, next) => {
+  req.params.holidayId == req.userId
+    ? next()
+    : res.status(403).send('Require Owner or Admin Role');
+};
+
+export { verifyToken, isAdmin, isOwner };
