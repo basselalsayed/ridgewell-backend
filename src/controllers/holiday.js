@@ -5,10 +5,11 @@ const Op = Sequelize.Op;
 const getAll = async (req, res) =>
   send(200, res, {
     holidays: await req.context.models.Holiday.findAll({
-      attributes: {
-        exclude: ['userId'],
-      },
       include: [
+        {
+          model: req.context.models.HolidayRequest,
+          attributes: ['id', 'type', 'from', 'until', 'resolved'],
+        },
         {
           model: req.context.models.User,
           attributes: ['username', 'email'],
@@ -53,11 +54,24 @@ const newHoliday = async (req, res) => {
     response.length === 2
       ? send(500, res, { message: 'Two Staff on Holiday already ' })
       : send(200, res, {
-          holiday: await req.context.models.Holiday.create({
-            from: req.body.from,
-            until: req.body.until,
-            userId: req.userId,
-          }),
+          holiday: await req.context.models.Holiday.create(
+            {
+              from: req.body.from,
+              until: req.body.until,
+              userId: req.userId,
+              holidayRequests: [
+                {
+                  type: 'new',
+                  from: req.body.from,
+                  owner: req.userId,
+                  until: req.body.until,
+                },
+              ],
+            },
+            {
+              include: [req.context.models.HolidayRequest],
+            },
+          ),
         }),
   );
 };

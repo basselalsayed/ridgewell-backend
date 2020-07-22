@@ -41,7 +41,7 @@ app.get('/', (req, res) => {
 
 app.use('/session', routes.session);
 app.use('/users', routes.user);
-app.use('/holiday', routes.holiday);
+app.use('/holidays', routes.holiday);
 app.use('/requests', routes.holidayRequest);
 
 const eraseDatabaseOnSync = true;
@@ -81,8 +81,7 @@ const initialize = async () => {
       holidays: [
         {
           from: '2020-07-20',
-          until: '2020-07-30',
-          confirmed: true,
+          until: '2020-07-23',
         },
       ],
       holidayRequests: [{ type: 'delete', holidayId: '1', owner: '1' }],
@@ -98,13 +97,14 @@ const initialize = async () => {
       holidays: [
         {
           from: '2020-08-20',
-          until: '2020-08-30',
+          until: '2020-08-23',
         },
       ],
       holidayRequests: [{ type: 'new', holidayId: '2', owner: '2' }],
     },
     { include: [Holiday, HolidayRequest, Role] },
   );
+
   await User.create(
     {
       username: 'user1',
@@ -122,8 +122,8 @@ const initialize = async () => {
 
   await HolidayRequest.create({
     type: 'update',
-    from: '2020-08-21',
-    until: '2020-09-10',
+    from: '2020-08-10',
+    until: '2020-08-14',
     owner: '3',
     holidayId: '3',
   });

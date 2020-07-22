@@ -26,7 +26,7 @@ const newUpdateRequest = async (req, res) =>
           type: 'update',
           from: req.body.from,
           until: req.body.until,
-          userId: req.userId,
+          owner: req.userId,
         }),
       })
     : noHoliday(res);
@@ -37,7 +37,7 @@ const newDeleteRequest = async (req, res) =>
         request: await req.context.models.HolidayRequest.create({
           holidayId: req.params.holidayId,
           type: 'delete',
-          userId: req.userId,
+          owner: req.userId,
         }),
       })
     : noHoliday(res);
