@@ -75,9 +75,25 @@ const initialize = async () => {
 
   await User.create(
     {
-      username: 'bsas',
-      email: 'bsas@ridgewell.co.uk',
-      password: hashSync(process.env.ADMIN_PASS, 8),
+      username: process.env.ADMIN_1,
+      email: process.env.ADMIN_1_EMAIL,
+      password: hashSync(process.env.ADMIN_1_PASS, 8),
+      holidays: [
+        {
+          from: '2020-07-20',
+          until: '2020-07-23',
+        },
+      ],
+      holidayRequests: [{ type: 'delete', holidayId: '1', owner: '1' }],
+    },
+    { include: [Holiday, HolidayRequest, Role] },
+  ).then(user => user.setRoles([2]));
+
+  await User.create(
+    {
+      username: process.env.ADMIN_2,
+      email: process.env.ADMIN_2_EMAIL,
+      password: hashSync(process.env.ADMIN_2_PASS, 8),
       holidays: [
         {
           from: '2020-07-20',
