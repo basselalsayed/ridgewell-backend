@@ -1,7 +1,5 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class HolidayRequests extends Model {
     /**
@@ -10,19 +8,40 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      HolidayRequest.belongsTo(models.Holiday, {
+        foreignKey: {
+          name: 'holidayId',
+          allowNull: false,
+        },
+      });
+      HolidayRequest.belongsTo(models.User, {
+        foreignKey: {
+          name: 'owner',
+          allowNull: false,
+        },
+      });
+
+      HolidayRequest.belongsToMany(models.User, {
+        as: 'managerId',
+        through: 'approvedRequests',
+        foreignKey: 'requestId',
+        otherKey: 'managerId',
+      });
     }
-  };
-  HolidayRequests.init({
-    type: DataTypes.STRING,
-    from: DataTypes.DATE,
-    until: DataTypes.DATE,
-    resolved: DataTypes.BOOLEAN,
-    holidayId: DataTypes.INTEGER,
-    owner: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'HolidayRequests',
-  });
+  }
+  HolidayRequests.init(
+    {
+      type: DataTypes.STRING,
+      from: DataTypes.DATE,
+      until: DataTypes.DATE,
+      resolved: DataTypes.BOOLEAN,
+      holidayId: DataTypes.INTEGER,
+      owner: DataTypes.INTEGER,
+    },
+    {
+      sequelize,
+      modelName: 'HolidayRequests',
+    },
+  );
   return HolidayRequests;
 };
