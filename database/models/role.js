@@ -9,7 +9,7 @@ export default (sequelize, DataTypes) => {
      */
     static associate(models) {
       Role.belongsToMany(models.User, {
-        through: 'user_roles',
+        through: 'UserRoles',
         foreignKey: 'roleId',
         otherKey: 'userId',
       });

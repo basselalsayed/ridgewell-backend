@@ -23,7 +23,7 @@ export default (sequelize, DataTypes) => {
 
       HolidayRequest.belongsToMany(models.User, {
         as: 'managerId',
-        through: 'approvedRequests',
+        through: 'ApprovedRequests',
         foreignKey: 'requestId',
         otherKey: 'managerId',
       });

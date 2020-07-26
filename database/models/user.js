@@ -26,12 +26,12 @@ export default (sequelize, DataTypes) => {
       });
 
       User.belongsToMany(models.HolidayRequest, {
-        through: 'approvedRequests',
+        through: 'ApprovedRequests',
         foreignKey: 'managerId',
         otherKey: 'requestId',
       });
       User.belongsToMany(models.Role, {
-        through: 'user_roles',
+        through: 'UserRoles',
         foreignKey: 'userId',
         otherKey: 'roleId',
       });
