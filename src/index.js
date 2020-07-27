@@ -5,7 +5,7 @@ import cors from 'cors';
 import express from 'express';
 
 import routes from './routes';
-import models, { sequelize } from './models';
+
 import { hashSync } from 'bcryptjs';
 
 import db from '../database/models';
@@ -31,7 +31,7 @@ app.use((req, res, next) => {
 
 app.use(async (req, res, next) => {
   req.context = {
-    models,
+    models: db,
     // user: await models.User.findByLogin('rwieruch'),
   };
   next();
