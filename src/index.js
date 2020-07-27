@@ -1,14 +1,13 @@
 'use strict';
 
 import 'dotenv/config';
-import cors from 'cors';
 import express from 'express';
+import cors from 'cors';
 
+import db from '../database/models';
 import routes from './routes';
 
 import { hashSync } from 'bcryptjs';
-
-import db from '../database/models';
 
 const app = express();
 
