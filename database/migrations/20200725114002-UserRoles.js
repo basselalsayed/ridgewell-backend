@@ -1,7 +1,7 @@
 'use strict';
 
 export const up = async (queryInterface, Sequelize) => {
-  return queryInterface
+  await queryInterface
     .createTable('UserRoles', {
       id: {
         allowNull: false,
@@ -49,5 +49,5 @@ export const up = async (queryInterface, Sequelize) => {
     });
 };
 export const down = async (queryInterface, Sequelize) => {
-  return queryInterface.dropTable('UserRoles');
+  await queryInterface.dropTable('UserRoles');
 };

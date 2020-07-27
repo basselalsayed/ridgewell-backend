@@ -1,23 +1,22 @@
 import 'regenerator-runtime/runtime.js';
 
-import UserModel from '../src/models/user';
-import HolidayModel from '../src/models/holiday';
-import HolidayRequestModel from '../src/models/holidayRequest';
-import RoleModel from '../src/models/role';
+import UserModel from '../database/models/user';
+import HolidayModel from '../database/models/holiday';
+import HolidayRequestModel from '../database/models/holidayRequest';
+import RoleModel from '../database/models/role';
 import chai, { expect } from 'chai';
 import {
-  sequelize,
-  dataTypes,
   checkModelName,
-  checkUniqueIndex,
   checkPropertyExists,
+  dataTypes,
+  sequelize,
 } from 'sequelize-test-helpers';
-import sinon from 'sinon';
+
 import sinonChai from 'sinon-chai';
 
 chai.use(sinonChai);
 
-describe('src/models/User', () => {
+describe('database/models/user', () => {
   const [User, Holiday, HolidayRequest, Role] = [
     UserModel(sequelize, dataTypes),
     HolidayModel(sequelize, dataTypes),
@@ -27,7 +26,7 @@ describe('src/models/User', () => {
 
   const user = new User();
 
-  checkModelName(User)('user');
+  checkModelName(User)('User');
 
   context('properties', () => {
     ['username', 'email', 'password'].forEach(checkPropertyExists(user));
@@ -61,7 +60,7 @@ describe('src/models/User', () => {
 
     it('defined a second hasMany association with HolidayRequest', () => {
       expect(User.belongsToMany).to.have.been.calledWith(HolidayRequest, {
-        through: 'approvedRequests',
+        through: 'ApprovedRequests',
         foreignKey: 'managerId',
         otherKey: 'requestId',
       });
@@ -71,7 +70,7 @@ describe('src/models/User', () => {
       expect(User.belongsToMany).to.have.been.calledWith(Role, {
         foreignKey: 'userId',
         otherKey: 'roleId',
-        through: 'user_roles',
+        through: 'UserRoles',
       });
     });
   });

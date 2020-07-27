@@ -1,40 +1,47 @@
 'use strict';
-import { Model } from 'sequelize';
-export default (sequelize, DataTypes) => {
-  class Holiday extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      Holiday.hasMany(models.HolidayRequest, {
-        foreignKey: {
-          name: 'holidayId',
-          allowNull: false,
-        },
-        onDelete: 'CASCADE',
-      });
 
-      Holiday.belongsTo(models.User, {
-        foreignKey: {
-          name: 'userId',
-          allowNull: false,
-        },
-      });
-    }
-  }
-  Holiday.init(
-    {
-      from: DataTypes.DATE,
-      until: DataTypes.DATE,
-      confirmed: DataTypes.BOOLEAN,
-      userId: DataTypes.INTEGER,
+export default (sequelize, DataTypes) => {
+  const Holiday = sequelize.define('Holiday', {
+    from: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
-    {
-      sequelize,
-      modelName: 'Holiday',
+    until: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
-  );
+    confirmed: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+  });
+
+  Holiday.associate = ({ HolidayRequest, User }) => {
+    Holiday.hasMany(HolidayRequest, {
+      foreignKey: {
+        name: 'holidayId',
+        allowNull: false,
+      },
+      onDelete: 'CASCADE',
+    });
+
+    Holiday.belongsTo(User, {
+      foreignKey: {
+        name: 'userId',
+        allowNull: false,
+      },
+    });
+  };
+
   return Holiday;
 };

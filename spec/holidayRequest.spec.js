@@ -1,8 +1,8 @@
 import 'regenerator-runtime/runtime.js';
 
-import HolidayModel from '../src/models/holiday';
-import HolidayRequestModel from '../src/models/holidayRequest';
-import UserModel from '../src/models/user';
+import HolidayModel from '../database/models/holiday';
+import HolidayRequestModel from '../database/models/holidayRequest';
+import UserModel from '../database/models/user';
 import chai, { expect } from 'chai';
 import {
   sequelize,
@@ -11,12 +11,12 @@ import {
   checkUniqueIndex,
   checkPropertyExists,
 } from 'sequelize-test-helpers';
-import sinon from 'sinon';
+
 import sinonChai from 'sinon-chai';
 
 chai.use(sinonChai);
 
-describe('src/models/holidayRequest', () => {
+describe('database/models/holidayRequest', () => {
   const [HolidayRequest, Holiday, User] = [
     HolidayRequestModel(sequelize, dataTypes),
     HolidayModel(sequelize, dataTypes),
@@ -25,7 +25,7 @@ describe('src/models/holidayRequest', () => {
 
   const holidayRequest = new HolidayRequest();
 
-  checkModelName(HolidayRequest)('holidayRequest');
+  checkModelName(HolidayRequest)('HolidayRequest');
 
   context('properties', () => {
     ['type', 'from', 'until', 'resolved'].forEach(
@@ -56,7 +56,7 @@ describe('src/models/holidayRequest', () => {
       });
       expect(HolidayRequest.belongsToMany).to.have.been.calledWith(User, {
         as: 'managerId',
-        through: 'approvedRequests',
+        through: 'ApprovedRequests',
         foreignKey: 'requestId',
         otherKey: 'managerId',
       });

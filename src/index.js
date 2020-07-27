@@ -8,6 +8,8 @@ import routes from './routes';
 import models, { sequelize } from './models';
 import { hashSync } from 'bcryptjs';
 
+import db from '../database/models';
+
 const app = express();
 
 let corsOptions = {
@@ -46,7 +48,7 @@ app.use('/requests', routes.holidayRequest);
 
 const eraseDatabaseOnSync = true;
 
-sequelize
+db.sequelize
   .sync({ force: eraseDatabaseOnSync })
   .then(async () => {
     eraseDatabaseOnSync && initialize();
@@ -62,7 +64,7 @@ sequelize
   .catch(err => console.error(err));
 
 const initialize = async () => {
-  const { Holiday, HolidayRequest, Role, User } = models;
+  const { Holiday, HolidayRequest, Role, User } = db;
   await Role.create({
     id: 1,
     name: 'user',
@@ -78,13 +80,13 @@ const initialize = async () => {
       username: process.env.ADMIN_1,
       email: process.env.ADMIN_1_EMAIL,
       password: hashSync(process.env.ADMIN_1_PASS, 8),
-      holidays: [
+      Holidays: [
         {
           from: '2020-07-20',
           until: '2020-07-23',
         },
       ],
-      holidayRequests: [{ type: 'delete', holidayId: '1', owner: '1' }],
+      HolidayRequests: [{ type: 'delete', holidayId: '1', owner: '1' }],
     },
     { include: [Holiday, HolidayRequest, Role] },
   ).then(user => user.setRoles([2]));
@@ -94,13 +96,13 @@ const initialize = async () => {
       username: process.env.ADMIN_2,
       email: process.env.ADMIN_2_EMAIL,
       password: hashSync(process.env.ADMIN_2_PASS, 8),
-      holidays: [
+      Holidays: [
         {
           from: '2020-07-20',
           until: '2020-07-23',
         },
       ],
-      holidayRequests: [{ type: 'delete', holidayId: '1', owner: '1' }],
+      HolidayRequests: [{ type: 'delete', holidayId: '1', owner: '1' }],
     },
     { include: [Holiday, HolidayRequest, Role] },
   ).then(user => user.setRoles([2]));
@@ -110,13 +112,13 @@ const initialize = async () => {
       username: 'user',
       email: 'user@ridgewell.co.uk',
       password: hashSync('000000', 8),
-      holidays: [
+      Holidays: [
         {
           from: '2020-08-20',
           until: '2020-08-23',
         },
       ],
-      holidayRequests: [{ type: 'new', holidayId: '2', owner: '2' }],
+      HolidayRequests: [{ type: 'new', holidayId: '2', owner: '2' }],
     },
     { include: [Holiday, HolidayRequest, Role] },
   );
@@ -126,7 +128,7 @@ const initialize = async () => {
       username: 'user1',
       email: 'user1@ridgewell.co.uk',
       password: hashSync('000000', 8),
-      holidays: [
+      Holidays: [
         {
           from: '2020-08-15',
           until: '2020-08-25',

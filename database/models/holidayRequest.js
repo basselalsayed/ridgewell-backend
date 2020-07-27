@@ -1,47 +1,51 @@
 'use strict';
-import { Model } from 'sequelize';
-export default (sequelize, DataTypes) => {
-  class HolidayRequests extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      HolidayRequest.belongsTo(models.Holiday, {
-        foreignKey: {
-          name: 'holidayId',
-          allowNull: false,
-        },
-      });
-      HolidayRequest.belongsTo(models.User, {
-        foreignKey: {
-          name: 'owner',
-          allowNull: false,
-        },
-      });
 
-      HolidayRequest.belongsToMany(models.User, {
-        as: 'managerId',
-        through: 'ApprovedRequests',
-        foreignKey: 'requestId',
-        otherKey: 'managerId',
-      });
-    }
-  }
-  HolidayRequests.init(
-    {
+export default (sequelize, DataTypes) => {
+  const HolidayRequest = sequelize.define('HolidayRequest', {
+    type: {
       type: DataTypes.STRING,
-      from: DataTypes.DATE,
-      until: DataTypes.DATE,
-      resolved: DataTypes.BOOLEAN,
-      holidayId: DataTypes.INTEGER,
-      owner: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
-    {
-      sequelize,
-      modelName: 'HolidayRequests',
+    from: {
+      type: DataTypes.DATE,
     },
-  );
-  return HolidayRequests;
+    until: {
+      type: DataTypes.DATE,
+    },
+    resolved: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+  });
+
+  HolidayRequest.associate = ({ Holiday, User }) => {
+    HolidayRequest.belongsTo(Holiday, {
+      foreignKey: {
+        name: 'holidayId',
+        allowNull: false,
+      },
+    });
+    HolidayRequest.belongsTo(User, {
+      foreignKey: {
+        name: 'owner',
+        allowNull: false,
+      },
+    });
+
+    HolidayRequest.belongsToMany(User, {
+      as: 'managerId',
+      through: 'ApprovedRequests',
+      foreignKey: 'requestId',
+      otherKey: 'managerId',
+    });
+  };
+
+  return HolidayRequest;
 };

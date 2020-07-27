@@ -1,51 +1,72 @@
 'use strict';
-import { Model } from 'sequelize';
+
+import { Sequelize } from 'sequelize';
+
+const { Op } = Sequelize;
+
 export default (sequelize, DataTypes) => {
-  class User extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      User.hasMany(models.Holiday, {
-        foreignKey: {
-          name: 'userId',
-          allowNull: false,
-        },
-        onDelete: 'CASCADE',
-      });
-
-      User.hasMany(models.HolidayRequest, {
-        as: 'owner',
-        foreignKey: {
-          name: 'owner',
-          allowNull: false,
-        },
-        onDelete: 'CASCADE',
-      });
-
-      User.belongsToMany(models.HolidayRequest, {
-        through: 'ApprovedRequests',
-        foreignKey: 'managerId',
-        otherKey: 'requestId',
-      });
-      User.belongsToMany(models.Role, {
-        through: 'UserRoles',
-        foreignKey: 'userId',
-        otherKey: 'roleId',
-      });
-    }
-  }
-  User.init(
-    {
-      name: DataTypes.STRING,
-      email: DataTypes.STRING,
+  const User = sequelize.define('User', {
+    username: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
-    {
-      sequelize,
-      modelName: 'User',
+    email: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
-  );
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+  });
+
+  User.associate = ({ Holiday, HolidayRequest, Role }) => {
+    User.hasMany(Holiday, {
+      foreignKey: {
+        name: 'userId',
+        allowNull: false,
+      },
+      onDelete: 'CASCADE',
+    });
+
+    User.hasMany(HolidayRequest, {
+      as: 'owner',
+      foreignKey: {
+        name: 'owner',
+        allowNull: false,
+      },
+      onDelete: 'CASCADE',
+    });
+
+    User.belongsToMany(HolidayRequest, {
+      through: 'ApprovedRequests',
+      foreignKey: 'managerId',
+      otherKey: 'requestId',
+    });
+    User.belongsToMany(Role, {
+      through: 'UserRoles',
+      foreignKey: 'userId',
+      otherKey: 'roleId',
+    });
+  };
+
+  User.findByLogin = async login =>
+    await User.findOne({
+      where: {
+        [Op.or]: [{ username: login }, { email: login }],
+      },
+    });
+
   return User;
 };
