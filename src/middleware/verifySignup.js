@@ -1,6 +1,7 @@
-import models, { ROLES } from '../models';
+import db from '../../database/models';
 
-const User = models.User;
+const { User } = db.sequelize.models;
+const ROLES = ['user', 'admin'];
 
 const checkDuplicateUsernameOrEmail = (req, res, next) => {
   // Username

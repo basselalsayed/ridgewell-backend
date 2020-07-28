@@ -63,7 +63,7 @@ db.sequelize
   .catch(err => console.error(err));
 
 const initialize = async () => {
-  const { Holiday, HolidayRequest, Role, User } = db;
+  const { Holiday, HolidayRequest, Role, User } = db.sequelize.models;
   await Role.create({
     id: 1,
     name: 'user',

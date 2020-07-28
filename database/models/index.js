@@ -14,6 +14,7 @@ const env = process.env.NODE_ENV || 'development';
 const config = configEnv[env];
 
 let sequelize;
+
 if (config.url) {
   sequelize = new Sequelize(config.url, config);
 } else {
@@ -25,18 +26,17 @@ if (config.url) {
   );
 }
 
-const db = {
+const models = {
   User: user(sequelize, DataTypes),
   Holiday: holiday(sequelize, DataTypes),
   HolidayRequest: holidayRequest(sequelize, DataTypes),
   Role: role(sequelize, DataTypes),
 };
 
-Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) db[modelName].associate(db);
+Object.keys(models).forEach(model => {
+  if (models[model].associate) models[model].associate(models);
 });
 
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+const db = { sequelize, Sequelize };
 
 export default db;

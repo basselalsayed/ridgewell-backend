@@ -1,4 +1,4 @@
-import models from '../models';
+import db from '../../database/models';
 
 import {
   handleError,
@@ -10,7 +10,7 @@ import {
 } from './helpers';
 import { hashSync, compareSync } from 'bcryptjs';
 
-const { User } = models;
+const { User } = db.sequelize.models;
 
 const signUp = (req, res) => {
   // Save User to Database
