@@ -1,10 +1,13 @@
-import models from '../../models';
-import { Sequelize } from 'sequelize';
+import db from '../../../database/models';
+
 import { send } from '.';
 
-const Op = Sequelize.Op;
-
-const { Role } = models;
+const {
+  sequelize: {
+    models: { Role },
+  },
+  Sequelize: { Op },
+} = db;
 
 const registerSuccess = res =>
   send(200, res, { message: 'User was registered successfully!' });

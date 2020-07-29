@@ -1,8 +1,7 @@
 import { verify } from 'jsonwebtoken';
+import db from '../../database/models';
 
-import models from '../models';
-
-const { User } = models;
+const { User } = db.sequelize.models;
 
 const verifyToken = (req, res, next) => {
   let token = req.headers['x-access-token'];

@@ -1,5 +1,7 @@
-const holidayRequest = (sequelize, DataTypes) => {
-  const HolidayRequest = sequelize.define('holidayRequest', {
+'use strict';
+
+export default (sequelize, DataTypes) => {
+  const HolidayRequest = sequelize.define('HolidayRequest', {
     type: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -39,7 +41,7 @@ const holidayRequest = (sequelize, DataTypes) => {
 
     HolidayRequest.belongsToMany(User, {
       as: 'managerId',
-      through: 'approvedRequests',
+      through: 'ApprovedRequests',
       foreignKey: 'requestId',
       otherKey: 'managerId',
     });
@@ -47,5 +49,3 @@ const holidayRequest = (sequelize, DataTypes) => {
 
   return HolidayRequest;
 };
-
-export default holidayRequest;

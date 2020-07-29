@@ -1,8 +1,11 @@
-import { Sequelize } from 'sequelize';
-const Op = Sequelize.Op;
+'use strict';
 
-const user = (sequelize, DataTypes) => {
-  const User = sequelize.define('user', {
+import { Sequelize } from 'sequelize';
+
+const { Op } = Sequelize;
+
+export default (sequelize, DataTypes) => {
+  const User = sequelize.define('User', {
     username: {
       type: DataTypes.STRING,
       unique: true,
@@ -47,12 +50,12 @@ const user = (sequelize, DataTypes) => {
     });
 
     User.belongsToMany(HolidayRequest, {
-      through: 'approvedRequests',
+      through: 'ApprovedRequests',
       foreignKey: 'managerId',
       otherKey: 'requestId',
     });
     User.belongsToMany(Role, {
-      through: 'user_roles',
+      through: 'UserRoles',
       foreignKey: 'userId',
       otherKey: 'roleId',
     });
@@ -67,5 +70,3 @@ const user = (sequelize, DataTypes) => {
 
   return User;
 };
-
-export default user;

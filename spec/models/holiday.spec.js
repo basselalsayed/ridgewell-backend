@@ -1,8 +1,8 @@
 import 'regenerator-runtime/runtime.js';
 
-import HolidayModel from '../src/models/holiday';
-import HolidayRequestModel from '../src/models/holidayRequest';
-import UserModel from '../src/models/user';
+import HolidayModel from '../../database/models/holiday';
+import HolidayRequestModel from '../../database/models/holidayRequest';
+import UserModel from '../../database/models/user';
 import chai, { expect } from 'chai';
 import {
   sequelize,
@@ -11,12 +11,12 @@ import {
   checkUniqueIndex,
   checkPropertyExists,
 } from 'sequelize-test-helpers';
-import sinon from 'sinon';
+
 import sinonChai from 'sinon-chai';
 
 chai.use(sinonChai);
 
-describe('src/models/holiday', () => {
+describe('database/models/holiday', () => {
   const [Holiday, User, HolidayRequest] = [
     HolidayModel(sequelize, dataTypes),
     UserModel(sequelize, dataTypes),
@@ -25,7 +25,7 @@ describe('src/models/holiday', () => {
 
   const holiday = new Holiday();
 
-  checkModelName(Holiday)('holiday');
+  checkModelName(Holiday)('Holiday');
 
   context('properties', () => {
     ['from', 'until', 'confirmed'].forEach(checkPropertyExists(holiday));

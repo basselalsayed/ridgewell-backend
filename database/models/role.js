@@ -1,5 +1,7 @@
-const role = (sequelize, DataTypes) => {
-  const Role = sequelize.define('roles', {
+'use strict';
+
+export default (sequelize, DataTypes) => {
+  const Role = sequelize.define('Role', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -11,7 +13,7 @@ const role = (sequelize, DataTypes) => {
 
   Role.associate = ({ User }) => {
     Role.belongsToMany(User, {
-      through: 'user_roles',
+      through: 'UserRoles',
       foreignKey: 'roleId',
       otherKey: 'userId',
     });
@@ -19,5 +21,3 @@ const role = (sequelize, DataTypes) => {
 
   return Role;
 };
-
-export default role;

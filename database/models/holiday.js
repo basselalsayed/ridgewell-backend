@@ -1,5 +1,7 @@
-const holiday = (sequelize, DataTypes) => {
-  const Holiday = sequelize.define('holiday', {
+'use strict';
+
+export default (sequelize, DataTypes) => {
+  const Holiday = sequelize.define('Holiday', {
     from: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -43,5 +45,3 @@ const holiday = (sequelize, DataTypes) => {
 
   return Holiday;
 };
-
-export default holiday;
