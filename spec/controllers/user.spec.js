@@ -1,77 +1,85 @@
-import 'regenerator-runtime/runtime.js';
+import { expect } from 'chai';
+import { match, stub, resetHistory } from 'sinon';
+// import proxyquire from 'proxyquire';
 
-import UserModel from '../../database/models/user';
-import HolidayModel from '../../database/models/holiday';
-import HolidayRequestModel from '../../database/models/holidayRequest';
-import RoleModel from '../../database/models/role';
-import chai, { expect } from 'chai';
-import {
-  checkModelName,
-  checkPropertyExists,
-  dataTypes,
-  sequelize,
-} from 'sequelize-test-helpers';
+import { makeMockModels } from 'sequelize-test-helpers';
+import db from '../../database/models';
+import { allAccess } from '../../src/controllers';
 
-import sinonChai from 'sinon-chai';
+describe('src/controllers/user', () => {
+  const mockUser = { findAll: stub().returns(true) };
+  const { User } = makeMockModels({ User: mockUser });
 
-chai.use(sinonChai);
+  // const allAccess = proxyquire('../../src/controllers/user', {
+  //   '../models': mockModels,
+  // });
 
-describe('database/models/user', () => {
-  const [User, Holiday, HolidayRequest, Role] = [
-    UserModel(sequelize, dataTypes),
-    HolidayModel(sequelize, dataTypes),
-    HolidayRequestModel(sequelize, dataTypes),
-    RoleModel(sequelize, dataTypes),
-  ];
+  // const id = 1;
+  const req = {
+    context: {
+      models: {
+        User,
+      },
+    },
+  };
 
-  const user = new User();
+  // const res = () => ({
+  //   json: stub().returns(this),
+  //   status: stub().returns(this),
+  //   send: stub().returns(this),
+  // });
 
-  checkModelName(User)('User');
+  const res = (() => {
+    const mockRes = {};
+    mockRes.json = stub().returns(mockRes);
+    mockRes.send = stub().returns(mockRes);
+    mockRes.status = stub().returns(mockRes);
+    return mockRes;
+  })();
+  // const fakeUser = { id, ...data, update: stub() };
 
-  context('properties', () => {
-    ['username', 'email', 'password'].forEach(checkPropertyExists(user));
+  context('gets all users', () => {
+    after(resetHistory);
+
+    it('called User.findAll', async () => {
+      await allAccess(req, res);
+      expect(mockUser.findAll).to.have.been.calledWith(
+        match({
+          attributes: {
+            exclude: ['password'],
+          },
+        }),
+      );
+    });
+
+    // it("didn't call user.update", () => {
+    //   expect(fakeUser.update).not.to.have.been.called;
+    // });
+
+    // it('returned null', () => {
+    //   expect(result).to.be.null;
+    // });
   });
 
-  context('associations', () => {
-    before(() => {
-      User.associate({ Holiday, HolidayRequest, Role });
-    });
+  // context('user exists', () => {
+  //   before(async () => {
+  //     fakeUser.update.resolves(fakeUser);
+  //     User.findOne.resolves(fakeUser);
+  //     result = await save({ id, ...data });
+  //   });
 
-    it('defined a hasMany association with Holiday', () => {
-      expect(User.hasMany).to.have.been.calledWith(Holiday, {
-        foreignKey: {
-          name: 'userId',
-          allowNull: false,
-        },
-        onDelete: 'CASCADE',
-      });
-    });
+  //   after(resetHistory);
 
-    it('defined a hasMany association with HolidayRequest', () => {
-      expect(User.hasMany).to.have.been.calledWith(HolidayRequest, {
-        as: 'owner',
-        foreignKey: {
-          name: 'owner',
-          allowNull: false,
-        },
-        onDelete: 'CASCADE',
-      });
-    });
+  //   it('called User.findOne', () => {
+  //     expect(User.findOne).to.have.been.calledWith(match({ where: { id } }));
+  //   });
 
-    it('defined a second hasMany association with HolidayRequest', () => {
-      expect(User.belongsToMany).to.have.been.calledWith(HolidayRequest, {
-        through: 'ApprovedRequests',
-        foreignKey: 'managerId',
-        otherKey: 'requestId',
-      });
-    });
+  //   it('called user.update', () => {
+  //     expect(fakeUser.update).to.have.been.calledWith(match(data));
+  //   });
 
-    it('defined a belongsTo association with Role', () => {
-      expect(User.belongsToMany).to.have.been.calledWith(Role, {
-        foreignKey: 'userId',
-        otherKey: 'roleId',
-        through: 'UserRoles',
-      });
-    });
-  });
+  //   it('returned the user', () => {
+  //     expect(result).to.deep.equal(fakeUser);
+  //   });
+  // });
 });
