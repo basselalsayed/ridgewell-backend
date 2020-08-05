@@ -1,16 +1,11 @@
 import { expect } from 'chai';
-import { match, stub, resetHistory } from 'sinon';
+import { match, resetHistory } from 'sinon';
 import { helpers } from 'faker';
-import { makeMockModels } from 'sequelize-test-helpers';
 
 import { signUpService } from '../../src/services/auth';
+import { mockReq, mockUser, res } from './mocks';
 
 describe('src/controllers/auth', () => {
-  const mockUser = {
-    create: stub().resolves(true),
-    findByLogin: stub().returns(true),
-  };
-  const models = makeMockModels({ User: mockUser });
   const { username, email, name } = helpers.createCard();
 
   const req = {
@@ -19,16 +14,8 @@ describe('src/controllers/auth', () => {
       email,
       password: name,
     },
-    context: { models },
+    ...mockReq,
   };
-
-  const res = (() => {
-    const mockRes = {};
-    mockRes.json = stub().returns(mockRes);
-    mockRes.send = stub().returns(mockRes);
-    mockRes.status = stub().returns(mockRes);
-    return mockRes;
-  })();
 
   context('creates new user', () => {
     after(resetHistory);
