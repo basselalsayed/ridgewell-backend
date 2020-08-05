@@ -1,8 +1,8 @@
 import 'regenerator-runtime/runtime.js';
 
-import HolidayModel from '../../database/models/holiday';
-import HolidayRequestModel from '../../database/models/holidayRequest';
-import UserModel from '../../database/models/user';
+import HolidayModel from '../../database/models/Holiday';
+import HolidayRequestModel from '../../database/models/HolidayRequest';
+import UserModel from '../../database/models/User';
 import chai, { expect } from 'chai';
 import {
   sequelize,
