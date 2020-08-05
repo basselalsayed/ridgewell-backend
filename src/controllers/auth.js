@@ -1,30 +1,15 @@
 import db from '../../database/models';
 
-import {
-  handleError,
-  handleRole,
-  invalidPass,
-  noUser,
-  registerSuccess,
-  validPass,
-} from './helpers';
-import { hashSync, compareSync } from 'bcryptjs';
+import { handleError, invalidPass, noUser, validPass } from './helpers';
+import { compareSync } from 'bcryptjs';
+import { signUpService } from '../services/auth';
 
 const { User } = db.sequelize.models;
 
-const signUp = (req, res) => {
+const signUp = async (req, res) => {
   // Save User to Database
-  const { username, email, password, roles } = req.body;
-  User.create({
-    username: username,
-    email: email,
-    password: hashSync(password, 8),
-  })
-    .then(async user => {
-      await handleRole(user, roles);
-      validPass(res, user);
-    })
-    .catch(err => handleError(res, err));
+
+  await signUpService(req, res);
 };
 
 const signIn = (req, res) => {

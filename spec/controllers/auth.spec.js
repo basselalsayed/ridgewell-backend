@@ -1,15 +1,24 @@
 import { expect } from 'chai';
 import { match, stub, resetHistory } from 'sinon';
-
+import { helpers } from 'faker';
 import { makeMockModels } from 'sequelize-test-helpers';
 
-import { allAccess } from '../../src/controllers';
+import { signUpService } from '../../src/services/auth';
 
-describe('src/controllers/user', () => {
-  const mockUser = { findAll: stub().returns(true) };
+describe('src/controllers/auth', () => {
+  const mockUser = {
+    create: stub().resolves(true),
+    findByLogin: stub().returns(true),
+  };
   const models = makeMockModels({ User: mockUser });
+  const { username, email, name } = helpers.createCard();
 
   const req = {
+    body: {
+      username,
+      email,
+      password: name,
+    },
     context: { models },
   };
 
@@ -20,18 +29,19 @@ describe('src/controllers/user', () => {
     mockRes.status = stub().returns(mockRes);
     return mockRes;
   })();
-  // const fakeUser = { id, ...data, update: stub() };
 
-  context('gets all users', () => {
+  context('creates new user', () => {
     after(resetHistory);
 
-    it('called User.findAll', async () => {
-      await allAccess(req, res);
-      expect(mockUser.findAll).to.have.been.calledWith(
+    it('called User.create', async () => {
+      // stub(db.default, 'sequelize').returns(mockDb);
+
+      await signUpService(req, res);
+
+      expect(mockUser.create).to.have.been.calledWith(
         match({
-          attributes: {
-            exclude: ['password'],
-          },
+          username,
+          email,
         }),
       );
     });
