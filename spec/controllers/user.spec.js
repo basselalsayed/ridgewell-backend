@@ -1,32 +1,16 @@
 import { expect } from 'chai';
-import { match, stub, resetHistory } from 'sinon';
-
-import { makeMockModels } from 'sequelize-test-helpers';
+import { match, resetHistory } from 'sinon';
 
 import { allAccess } from '../../src/controllers';
 
+import { mockReq, mockUser, res } from './mocks';
+
 describe('src/controllers/user', () => {
-  const mockUser = { findAll: stub().returns(true) };
-  const models = makeMockModels({ User: mockUser });
-
-  const req = {
-    context: { models },
-  };
-
-  const res = (() => {
-    const mockRes = {};
-    mockRes.json = stub().returns(mockRes);
-    mockRes.send = stub().returns(mockRes);
-    mockRes.status = stub().returns(mockRes);
-    return mockRes;
-  })();
-  // const fakeUser = { id, ...data, update: stub() };
-
   context('gets all users', () => {
     after(resetHistory);
 
     it('called User.findAll', async () => {
-      await allAccess(req, res);
+      await allAccess(mockReq, res);
       expect(mockUser.findAll).to.have.been.calledWith(
         match({
           attributes: {

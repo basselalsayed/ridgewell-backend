@@ -4,6 +4,7 @@ import { makeMockModels } from 'sequelize-test-helpers';
 
 const mockUser = {
   create: stub().resolves(true),
+  findAll: stub().returns(true),
   findByLogin: stub().returns(true),
 };
 const models = makeMockModels({ User: mockUser });
