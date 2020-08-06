@@ -1,9 +1,11 @@
 import { expect } from 'chai';
-import { match, resetHistory } from 'sinon';
+import { match, resetHistory, stub } from 'sinon';
 import { helpers } from 'faker';
 
-import { signUpService } from '../../src/services/auth';
+import { signUpService, signInService } from '../../src/services/auth';
 import { mockReq, mockUser, res } from './mocks';
+
+import * as bcryptjs from 'bcryptjs';
 
 describe('src/controllers/auth', () => {
   const { username, email, name } = helpers.createCard();
@@ -21,8 +23,6 @@ describe('src/controllers/auth', () => {
     after(resetHistory);
 
     it('called User.create', async () => {
-      // stub(db.default, 'sequelize').returns(mockDb);
-
       await signUpService(req, res);
 
       expect(mockUser.create).to.have.been.calledWith(
@@ -34,6 +34,23 @@ describe('src/controllers/auth', () => {
     });
   });
 
+  context('signs in', () => {
+    let bcryptStub;
+
+    beforeEach(() => {
+      bcryptStub = stub(bcryptjs, 'compareSync').returns(true);
+    });
+
+    after(resetHistory);
+
+    it('called User.findByLogin', async () => {
+      // stub(bcrypt, 'compareSync');
+
+      await signInService(req, res);
+
+      expect(mockUser.findByLogin).to.have.been.calledWith(match(username));
+    });
+  });
   // context('user exists', () => {
   //   before(async () => {
   //     fakeUser.update.resolves(fakeUser);

@@ -1,5 +1,36 @@
-import { handleError, handleRole, validPass } from '../controllers/helpers';
-import { hashSync } from 'bcryptjs';
+import {
+  handleError,
+  handleRole,
+  validPass,
+  invalidPass,
+  noUser,
+} from '../controllers/helpers';
+import { hashSync, compareSync } from 'bcryptjs';
+
+const signInService = async (req, res) => {
+  const {
+    body: { username, email, password },
+    context: {
+      models: { User },
+    },
+  } = req;
+
+  const login = username || email;
+
+  // console.log('compareSync', compareSync);
+
+  await User.findByLogin(login)
+    .then(async user => {
+      // console.log('[user]', user);
+
+      return user
+        ? compareSync(password, user.password)
+          ? await validPass(res, user)
+          : invalidPass(res)
+        : await noUser(res);
+    })
+    .catch(async err => await handleError(res, err));
+};
 
 const signUpService = async (req, res) => {
   const {
@@ -9,7 +40,7 @@ const signUpService = async (req, res) => {
     },
   } = req;
 
-  User.create({
+  await User.create({
     username: username,
     email: email,
     password: hashSync(password, 8),
@@ -21,4 +52,4 @@ const signUpService = async (req, res) => {
     .catch(error => handleError(res, error));
 };
 
-export { signUpService };
+export { signInService, signUpService };
