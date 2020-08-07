@@ -17,19 +17,15 @@ const signInService = async (req, res) => {
 
   const login = username || email;
 
-  // console.log('compareSync', compareSync);
-
   await User.findByLogin(login)
     .then(async user => {
-      // console.log('[user]', user);
-
       return user
         ? compareSync(password, user.password)
-          ? await validPass(res, user)
+          ? validPass(res, user)
           : invalidPass(res)
-        : await noUser(res);
+        : noUser(res);
     })
-    .catch(async err => await handleError(res, err));
+    .catch(err => handleError(res, err));
 };
 
 const signUpService = async (req, res) => {

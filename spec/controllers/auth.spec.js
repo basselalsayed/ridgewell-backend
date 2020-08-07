@@ -5,7 +5,7 @@ import { helpers } from 'faker';
 import { signUpService, signInService } from '../../src/services/auth';
 import { mockReq, mockUser, res } from './mocks';
 
-import * as bcryptjs from 'bcryptjs';
+import * as bcrypt from 'bcryptjs';
 
 describe('src/controllers/auth', () => {
   const { username, email, name } = helpers.createCard();
@@ -35,20 +35,17 @@ describe('src/controllers/auth', () => {
   });
 
   context('signs in', () => {
-    let bcryptStub;
-
-    beforeEach(() => {
-      bcryptStub = stub(bcryptjs, 'compareSync').returns(true);
-    });
-
     after(resetHistory);
 
     it('called User.findByLogin', async () => {
-      // stub(bcrypt, 'compareSync');
-
       await signInService(req, res);
-
       expect(mockUser.findByLogin).to.have.been.calledWith(match(username));
+    });
+
+    it('called bcrypt.compareSync', async () => {
+      const bcryptStub = stub(bcrypt.default, 'compareSync').returns(true);
+      await signInService(req, res);
+      expect(bcryptStub).to.have.been.called;
     });
   });
   // context('user exists', () => {
