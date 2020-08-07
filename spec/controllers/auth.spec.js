@@ -35,16 +35,20 @@ describe('src/controllers/auth', () => {
   });
 
   context('signs in', () => {
+    let bcryptStub;
+
+    before(async () => {
+      bcryptStub = stub(bcrypt.default, 'compareSync').returns(true);
+      await signInService(req, res);
+    });
+
     after(resetHistory);
 
     it('called User.findByLogin', async () => {
-      await signInService(req, res);
       expect(mockUser.findByLogin).to.have.been.calledWith(match(username));
     });
 
     it('called bcrypt.compareSync', async () => {
-      const bcryptStub = stub(bcrypt.default, 'compareSync').returns(true);
-      await signInService(req, res);
       expect(bcryptStub).to.have.been.called;
     });
   });
