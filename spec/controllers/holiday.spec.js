@@ -44,20 +44,19 @@ describe('src/services/holiday', () => {
     });
   });
 
-  xcontext('stub', () => {
-    let bcryptStub;
-    let validStub;
-    let invalidStub;
+  context('error gets all holidays', () => {
+    let handleErrorStub;
+    before(async () => {
+      mockHoliday.findAll = stub().throws();
+      handleErrorStub = stub(Helpers, 'handleError');
 
-    beforeEach(async () => {
-      validStub = stub(Helpers, 'validPass').callsFake(true);
+      await allHolidaysService(req, res);
     });
-    beforeEach(async () => {});
 
-    afterEach(restore);
+    after(restore);
 
-    xit('called validPass', async () => {
-      expect(validStub).to.have.been.called;
+    it('called handleError', async () => {
+      expect(handleErrorStub).to.have.been.called;
     });
   });
 });
