@@ -9,6 +9,7 @@ const mockUser = {
 };
 const mockHoliday = {
   findAll: stub().resolves(true),
+  findByPk: stub().resolves(true),
 };
 const models = makeMockModels({
   Holiday: mockHoliday,

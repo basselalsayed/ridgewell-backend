@@ -22,10 +22,22 @@ const allHolidaysService = async (
       ],
     });
 
-    send(200, res, { holidays });
+    if (holidays) send(200, res, { holidays });
   } catch (error) {
     handleError(res, error);
   }
 };
 
-export { allHolidaysService };
+const getHolidayService = async (req, res) => {
+  try {
+    const holiday = await req.context.models.Holiday.findByPk(
+      req.params.holidayId,
+    );
+
+    if (holiday) send(200, res, { holidays });
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
+export { allHolidaysService, getHolidayService };

@@ -5,18 +5,25 @@ import { mockReq, mockHoliday, res } from './mocks';
 
 import * as Helpers from '../../src/controllers/helpers';
 
-import { allHolidaysService } from '../../src/services/holiday';
+import {
+  allHolidaysService,
+  getHolidayService,
+} from '../../src/services/holiday';
 
 describe('src/services/holiday', () => {
   const req = {
     body: {},
+    params: { holidayId: 1 },
     ...mockReq,
   };
 
-  context('gets all holidays', () => {
-    let sendStub;
+  let sendStub;
+  before(async () => {
+    sendStub = stub(Helpers, 'send').returns(true);
+  });
+
+  context('allHolidaysService', () => {
     before(async () => {
-      sendStub = stub(Helpers, 'send').returns(true);
       await allHolidaysService(req, res);
     });
 
@@ -44,7 +51,7 @@ describe('src/services/holiday', () => {
     });
   });
 
-  context('error gets all holidays', () => {
+  context('allHolidaysService [Error]', () => {
     let handleErrorStub;
     before(async () => {
       mockHoliday.findAll = stub().throws();
@@ -57,6 +64,24 @@ describe('src/services/holiday', () => {
 
     it('called handleError', async () => {
       expect(handleErrorStub).to.have.been.called;
+    });
+  });
+
+  context('gets one Holiday', () => {
+    before(async () => {
+      await getHolidayService(req, res);
+    });
+
+    after(restore);
+
+    it('called called Holiday.findByPk', async () => {
+      expect(mockHoliday.findByPk).to.have.been.calledWith(
+        match(req.params.holidayId),
+      );
+    });
+
+    it('called send', async () => {
+      expect(sendStub).to.have.been.called;
     });
   });
 });
