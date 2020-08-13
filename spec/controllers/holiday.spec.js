@@ -67,7 +67,7 @@ describe('src/services/holiday', () => {
     });
   });
 
-  context('gets one Holiday', () => {
+  context('getHolidayService', () => {
     before(async () => {
       await getHolidayService(req, res);
     });
@@ -82,6 +82,22 @@ describe('src/services/holiday', () => {
 
     it('called send', async () => {
       expect(sendStub).to.have.been.called;
+    });
+  });
+
+  context('getHolidayService [Error]', () => {
+    let handleErrorStub;
+    before(async () => {
+      mockHoliday.findByPk = stub().throws();
+      handleErrorStub = stub(Helpers, 'handleError');
+
+      await getHolidayService(req, res);
+    });
+
+    after(restore);
+
+    it('called handleError', async () => {
+      expect(handleErrorStub).to.have.been.called;
     });
   });
 });

@@ -34,7 +34,7 @@ const getHolidayService = async (req, res) => {
       req.params.holidayId,
     );
 
-    if (holiday) send(200, res, { holidays });
+    if (holiday) send(200, res, { holiday });
   } catch (error) {
     handleError(res, error);
   }
