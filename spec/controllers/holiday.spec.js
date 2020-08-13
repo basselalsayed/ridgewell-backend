@@ -1,7 +1,7 @@
 import { expect } from 'chai';
-import { match, resetHistory, stub, restore } from 'sinon';
+import { match, stub, restore } from 'sinon';
 
-import { mockReq, mockHoliday, res, models } from './mocks';
+import { mockReq, mockHoliday, res } from './mocks';
 
 import * as Helpers from '../../src/controllers/helpers';
 

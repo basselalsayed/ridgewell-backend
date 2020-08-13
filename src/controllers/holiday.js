@@ -1,22 +1,10 @@
 import { handleError, send } from './helpers';
-import { Sequelize } from 'sequelize';
 
-const Op = Sequelize.Op;
-const getAll = async (req, res) =>
-  send(200, res, {
-    holidays: await req.context.models.Holiday.findAll({
-      include: [
-        {
-          model: req.context.models.HolidayRequest,
-          attributes: ['id', 'type', 'from', 'until', 'resolved'],
-        },
-        {
-          model: req.context.models.User,
-          attributes: ['username', 'email'],
-        },
-      ],
-    }),
-  });
+import { allHolidaysService } from '../services/holiday';
+import { Sequelize } from '../../database/models';
+
+const { Op } = Sequelize;
+const getAll = async (req, res) => await allHolidaysService(req, res);
 
 const getOne = async (req, res) =>
   send(200, res, {
