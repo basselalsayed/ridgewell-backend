@@ -1,15 +1,12 @@
 import { handleError, send } from './helpers';
 
-import { allHolidaysService } from '../services/holiday';
+import { allHolidaysService, getHolidayService } from '../services/holiday';
 import { Sequelize } from '../../database/models';
 
 const { Op } = Sequelize;
 const getAll = async (req, res) => await allHolidaysService(req, res);
 
-const getOne = async (req, res) =>
-  send(200, res, {
-    holiday: await req.context.models.Holiday.findByPk(req.params.holidayId),
-  });
+const getOne = async (req, res) => await getHolidayService(req, res);
 
 const updateHoliday = async (req, res) => {
   await req.context.models.Holiday.update(
