@@ -1,11 +1,12 @@
 import { expect } from 'chai';
-import { match, resetHistory, stub } from 'sinon';
+import { match, resetHistory, stub, restore } from 'sinon';
 import { helpers } from 'faker';
 
 import { signUpService, signInService } from '../../src/services/auth';
 import { mockReq, mockUser, res } from './mocks';
 
 import * as bcrypt from 'bcryptjs';
+import * as Helpers from '../../src/controllers/helpers';
 
 describe('src/controllers/auth', () => {
   const { username, email, name } = helpers.createCard();
@@ -36,13 +37,18 @@ describe('src/controllers/auth', () => {
 
   context('signs in', () => {
     let bcryptStub;
+    let validStub;
+    let invalidStub;
 
-    before(async () => {
+    beforeEach(async () => {
+      validStub = stub(Helpers, 'validPass').callsFake(true);
+      invalidStub = stub(Helpers, 'invalidPass').returns(true);
       bcryptStub = stub(bcrypt.default, 'compareSync').returns(true);
       await signInService(req, res);
     });
+    beforeEach(async () => {});
 
-    after(resetHistory);
+    afterEach(restore);
 
     it('called User.findByLogin', async () => {
       expect(mockUser.findByLogin).to.have.been.calledWith(match(username));
@@ -50,6 +56,24 @@ describe('src/controllers/auth', () => {
 
     it('called bcrypt.compareSync', async () => {
       expect(bcryptStub).to.have.been.called;
+    });
+    xit('called validPass', async () => {
+      console.log('[validStub]', validPass);
+      expect(validStub).to.have.been.called;
+    });
+  });
+
+  xcontext('unsuccessful signin', () => {
+    let bcryptStub;
+    let invalidStub;
+    before(async () => {
+      bcryptStub = stub(bcrypt.default, 'compareSync').returns(false);
+      invalidStub = stub(Helpers, 'invalidPass').returns(true);
+      await signInService(req, res);
+    });
+
+    it('called invalidPass', async () => {
+      expect(invalidStub).to.have.been.called;
     });
   });
   // context('user exists', () => {
