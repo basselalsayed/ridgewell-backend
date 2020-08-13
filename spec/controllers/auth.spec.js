@@ -2,11 +2,11 @@ import { expect } from 'chai';
 import { match, resetHistory, stub, restore } from 'sinon';
 import { helpers } from 'faker';
 
-import { signUpService, signInService } from '../../src/services/auth';
 import { mockReq, mockUser, res } from './mocks';
 
 import * as bcrypt from 'bcryptjs';
 import * as Helpers from '../../src/controllers/helpers';
+import { signUpService, signInService } from '../../src/services/auth';
 
 describe('src/controllers/auth', () => {
   const { username, email, name } = helpers.createCard();
@@ -38,17 +38,14 @@ describe('src/controllers/auth', () => {
   context('signs in', () => {
     let bcryptStub;
     let validStub;
-    let invalidStub;
 
-    beforeEach(async () => {
-      validStub = stub(Helpers, 'validPass').callsFake(true);
-      invalidStub = stub(Helpers, 'invalidPass').returns(true);
+    before(async () => {
       bcryptStub = stub(bcrypt.default, 'compareSync').returns(true);
+      validStub = stub(Helpers, 'validPass');
       await signInService(req, res);
     });
-    beforeEach(async () => {});
 
-    afterEach(restore);
+    after(restore);
 
     it('called User.findByLogin', async () => {
       expect(mockUser.findByLogin).to.have.been.calledWith(match(username));
@@ -58,19 +55,20 @@ describe('src/controllers/auth', () => {
       expect(bcryptStub).to.have.been.called;
     });
     xit('called validPass', async () => {
-      console.log('[validStub]', validPass);
       expect(validStub).to.have.been.called;
     });
   });
 
   xcontext('unsuccessful signin', () => {
-    let bcryptStub;
     let invalidStub;
+
     before(async () => {
-      bcryptStub = stub(bcrypt.default, 'compareSync').returns(false);
-      invalidStub = stub(Helpers, 'invalidPass').returns(true);
+      stub(bcrypt.default, 'compareSync').returns(false);
+      invalidStub = stub(Helpers, 'invalidPass');
       await signInService(req, res);
     });
+
+    after(restore);
 
     it('called invalidPass', async () => {
       expect(invalidStub).to.have.been.called;

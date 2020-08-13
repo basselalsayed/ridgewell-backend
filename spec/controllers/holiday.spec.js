@@ -1,24 +1,28 @@
 import { expect } from 'chai';
 import { match, resetHistory, stub, restore } from 'sinon';
-import { helpers } from 'faker';
 
-import { mockReq, mockHoliday, res } from './mocks';
+import { mockReq, mockHoliday, res, models } from './mocks';
 
 import * as Helpers from '../../src/controllers/helpers';
-import { getAll } from '../../src/controllers/holiday';
 
-describe('src/controllers/holiday', () => {
+import { allHolidaysService } from '../../src/services/holiday';
+
+describe('src/services/holiday', () => {
   const req = {
     body: {},
     ...mockReq,
   };
 
   context('gets all holidays', () => {
-    after(resetHistory);
+    let sendStub;
+    before(async () => {
+      sendStub = stub(Helpers, 'send').returns(true);
+      await allHolidaysService(req, res);
+    });
+
+    after(restore);
 
     it('called Holidays.findAll', async () => {
-      await getAll(req, res);
-
       expect(mockHoliday.findAll).to.have.been.calledWith(
         match({
           include: [
@@ -33,6 +37,10 @@ describe('src/controllers/holiday', () => {
           ],
         }),
       );
+    });
+
+    it('called send', async () => {
+      expect(sendStub).to.have.been.called;
     });
   });
 

@@ -38,5 +38,5 @@ Object.keys(models).forEach(model => {
 });
 
 const db = { sequelize, Sequelize };
-
+export { sequelize, Sequelize };
 export default db;

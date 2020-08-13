@@ -1,15 +1,22 @@
 import { send, handleError } from '../controllers/helpers';
 
-const allHolidaysService = async (req, res) => {
+const allHolidaysService = async (
+  {
+    context: {
+      models: { Holiday, HolidayRequest, User },
+    },
+  },
+  res,
+) => {
   try {
-    const holidays = await req.context.models.Holiday.findAll({
+    const holidays = await Holiday.findAll({
       include: [
         {
-          model: req.context.models.HolidayRequest,
+          model: HolidayRequest,
           attributes: ['id', 'type', 'from', 'until', 'resolved'],
         },
         {
-          model: req.context.models.User,
+          model: User,
           attributes: ['username', 'email'],
         },
       ],
