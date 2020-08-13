@@ -7,7 +7,13 @@ const mockUser = {
   findAll: stub().resolves(true),
   findByLogin: stub().resolves(true),
 };
-const models = makeMockModels({ User: mockUser });
+const mockHoliday = {
+  findAll: stub().resolves(true),
+};
+const models = makeMockModels({
+  Holiday: mockHoliday,
+  User: mockUser,
+});
 
 const mockReq = {
   context: { models },
@@ -21,4 +27,4 @@ const res = (() => {
   return mockRes;
 })();
 
-export { mockUser, models, mockReq, res };
+export { mockHoliday, mockUser, models, mockReq, res };
