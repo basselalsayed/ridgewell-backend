@@ -13,7 +13,7 @@ import {
 
 describe('src/services/holiday', () => {
   const req = {
-    body: { holiday: { confirmed: true } },
+    body: { confirmed: true },
     params: { holidayId: 1 },
     ...mockReq,
   };
@@ -121,6 +121,10 @@ describe('src/services/holiday', () => {
             ),
         ),
       );
+    });
+
+    it('calls Holiday.update', () => {
+      expect(mockHoliday.update).to.have.been.called;
     });
   });
 });
