@@ -19,9 +19,12 @@ describe('src/services/holiday', () => {
   };
 
   let sendStub;
+
   before(async () => {
     sendStub = stub(Helpers, 'send').returns(true);
   });
+
+  after(restore);
 
   context('allHolidaysService', () => {
     before(async () => {
@@ -55,8 +58,8 @@ describe('src/services/holiday', () => {
   context('allHolidaysService [Error]', () => {
     let handleErrorStub;
     before(async () => {
-      mockHoliday.findAll = stub().throws();
       handleErrorStub = stub(Helpers, 'handleError');
+      mockHoliday.findAll = stub().throws();
 
       await allHolidaysService(req, res);
     });
@@ -89,8 +92,8 @@ describe('src/services/holiday', () => {
   context('getHolidayService [Error]', () => {
     let handleErrorStub;
     before(async () => {
-      mockHoliday.findByPk = stub().throws();
       handleErrorStub = stub(Helpers, 'handleError');
+      mockHoliday.findByPk = stub().throws();
 
       await getHolidayService(req, res);
     });
@@ -125,6 +128,25 @@ describe('src/services/holiday', () => {
 
     it('calls Holiday.update', () => {
       expect(mockHoliday.update).to.have.been.called;
+    });
+
+    it('called send', async () => {
+      expect(sendStub).to.have.been.called;
+    });
+  });
+
+  context('updateHolidayService [Error]', () => {
+    let handleErrorStub;
+    before(async () => {
+      handleErrorStub = stub(Helpers, 'handleError');
+      req.context.db.sequelize.transaction = stub().throws();
+      await updateHolidayService(req, res);
+    });
+
+    after(restore);
+
+    it('called handleError', async () => {
+      expect(handleErrorStub).to.have.been.called;
     });
   });
 });
