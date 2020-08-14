@@ -1,23 +1,18 @@
 import { handleError, send } from './helpers';
 
-import { allHolidaysService, getHolidayService } from '../services/holiday';
-import { Sequelize } from '../../database/models';
+import {
+  allHolidaysService,
+  getHolidayService,
+  updateHolidayService,
+} from '../services/holiday';
+import { Sequelize, sequelize } from '../../database/models';
 
 const { Op } = Sequelize;
 const getAll = async (req, res) => await allHolidaysService(req, res);
 
 const getOne = async (req, res) => await getHolidayService(req, res);
 
-const updateHoliday = async (req, res) => {
-  await req.context.models.Holiday.update(
-    { ...req.body.holiday },
-    {
-      where: { id: req.params.holidayId },
-    },
-  )
-    .then(holiday => holiday[0] > 0 && send(200, res, { message: 'Success' }))
-    .catch(err => handleError(err));
-};
+const updateHoliday = async (req, res) => await updateHolidayService(req, res);
 
 const newHoliday = async (req, res) => {
   const where = {

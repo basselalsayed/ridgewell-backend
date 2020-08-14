@@ -30,6 +30,7 @@ app.use((req, res, next) => {
 
 app.use(async (req, res, next) => {
   req.context = {
+    db,
     models: db.sequelize.models,
     // user: await models.User.findByLogin('rwieruch'),
   };

@@ -8,11 +8,12 @@ import * as Helpers from '../../src/controllers/helpers';
 import {
   allHolidaysService,
   getHolidayService,
+  updateHolidayService,
 } from '../../src/services/holiday';
 
 describe('src/services/holiday', () => {
   const req = {
-    body: {},
+    body: { holiday: { confirmed: true } },
     params: { holidayId: 1 },
     ...mockReq,
   };
@@ -98,6 +99,28 @@ describe('src/services/holiday', () => {
 
     it('called handleError', async () => {
       expect(handleErrorStub).to.have.been.called;
+    });
+  });
+
+  context('updateHolidayService', () => {
+    before(async () => {
+      await updateHolidayService(req, res);
+    });
+
+    after(restore);
+
+    it('calls sequelize.transaction', () => {
+      expect(req.context.db.sequelize.transaction).to.have.been.calledWith(
+        match(
+          async () =>
+            await req.context.models.Holiday.update(
+              { ...req.body.holiday },
+              {
+                where: { id: req.params.holidayId },
+              },
+            ),
+        ),
+      );
     });
   });
 });

@@ -40,4 +40,32 @@ const getHolidayService = async (req, res) => {
   }
 };
 
-export { allHolidaysService, getHolidayService };
+const updateHolidayService = async (
+  {
+    context: {
+      db: { sequelize },
+    },
+    body,
+    params,
+  },
+  res,
+) => {
+  try {
+    const holiday = await sequelize.transaction(
+      async () =>
+        await sequelize.models.Holiday.update(
+          { ...body },
+          {
+            where: { id: params.holidayId },
+          },
+        ),
+    );
+
+    if (holiday[0] > 0) send(200, res, { message: 'Success' });
+  } catch (error) {
+    console.log(error);
+    handleError(error);
+  }
+};
+
+export { allHolidaysService, getHolidayService, updateHolidayService };

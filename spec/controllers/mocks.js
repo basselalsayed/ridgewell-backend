@@ -10,6 +10,7 @@ const mockUser = {
 const mockHoliday = {
   findAll: stub().resolves(true),
   findByPk: stub().resolves(true),
+  update: stub().resolves(true),
 };
 const models = makeMockModels({
   Holiday: mockHoliday,
@@ -17,7 +18,15 @@ const models = makeMockModels({
 });
 
 const mockReq = {
-  context: { models },
+  context: {
+    db: {
+      sequelize: {
+        models,
+        transaction: stub().resolves(true),
+      },
+    },
+    models,
+  },
 };
 
 const res = (() => {
