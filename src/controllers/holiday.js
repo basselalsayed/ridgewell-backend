@@ -1,38 +1,18 @@
 import { handleError, send } from './helpers';
-import { Sequelize } from 'sequelize';
 
-const Op = Sequelize.Op;
-const getAll = async (req, res) =>
-  send(200, res, {
-    holidays: await req.context.models.Holiday.findAll({
-      include: [
-        {
-          model: req.context.models.HolidayRequest,
-          attributes: ['id', 'type', 'from', 'until', 'resolved'],
-        },
-        {
-          model: req.context.models.User,
-          attributes: ['username', 'email'],
-        },
-      ],
-    }),
-  });
+import {
+  allHolidaysService,
+  getHolidayService,
+  updateHolidayService,
+} from '../services/holiday';
+import { Sequelize, sequelize } from '../../database/models';
 
-const getOne = async (req, res) =>
-  send(200, res, {
-    holiday: await req.context.models.Holiday.findByPk(req.params.holidayId),
-  });
+const { Op } = Sequelize;
+const getAll = async (req, res) => await allHolidaysService(req, res);
 
-const updateHoliday = async (req, res) => {
-  await req.context.models.Holiday.update(
-    { ...req.body.holiday },
-    {
-      where: { id: req.params.holidayId },
-    },
-  )
-    .then(holiday => holiday[0] > 0 && send(200, res, { message: 'Success' }))
-    .catch(err => handleError(err));
-};
+const getOne = async (req, res) => await getHolidayService(req, res);
+
+const updateHoliday = async (req, res) => await updateHolidayService(req, res);
 
 const newHoliday = async (req, res) => {
   const where = {
@@ -52,7 +32,7 @@ const newHoliday = async (req, res) => {
 
   await req.context.models.Holiday.findAll({ where }).then(async response =>
     response.length === 2
-      ? send(500, res, { message: 'Two Staff on Holiday already ' })
+      ? send(500, res, { message: 'Two Staff on Holiday already' })
       : send(200, res, {
           holiday: await req.context.models.Holiday.create(
             {

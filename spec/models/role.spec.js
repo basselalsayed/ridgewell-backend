@@ -1,7 +1,7 @@
 import 'regenerator-runtime/runtime.js';
 
-import RoleModel from '../../database/models/role';
-import UserModel from '../../database/models/user';
+import RoleModel from '../../database/models/Role';
+import UserModel from '../../database/models/User';
 import chai, { expect } from 'chai';
 import {
   checkModelName,

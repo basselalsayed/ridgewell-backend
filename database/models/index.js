@@ -4,10 +4,10 @@ import configEnv from '../config/config';
 
 import Sequelize, { DataTypes } from 'sequelize';
 
-import holiday from './holiday';
-import holidayRequest from './holidayRequest';
-import role from './role';
-import user from './user';
+import holiday from './Holiday';
+import holidayRequest from './HolidayRequest';
+import role from './Role';
+import user from './User';
 
 const env = process.env.NODE_ENV || 'development';
 
@@ -39,4 +39,5 @@ Object.keys(models).forEach(model => {
 
 const db = { sequelize, Sequelize };
 
+export { sequelize, Sequelize };
 export default db;

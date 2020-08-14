@@ -1,9 +1,9 @@
 import 'regenerator-runtime/runtime.js';
 
-import UserModel from '../../database/models/user';
-import HolidayModel from '../../database/models/holiday';
-import HolidayRequestModel from '../../database/models/holidayRequest';
-import RoleModel from '../../database/models/role';
+import UserModel from '../../database/models/User';
+import HolidayModel from '../../database/models/Holiday';
+import HolidayRequestModel from '../../database/models/HolidayRequest';
+import RoleModel from '../../database/models/Role';
 import chai, { expect } from 'chai';
 import {
   checkModelName,
