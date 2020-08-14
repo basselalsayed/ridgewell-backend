@@ -149,4 +149,53 @@ describe('src/services/holiday', () => {
       expect(handleErrorStub).to.have.been.called;
     });
   });
+
+  xcontext('newHolidayService', () => {
+    before(async () => {
+      await newHolidayService(req, res);
+    });
+
+    after(restore);
+
+    it('calls sequelize.transaction', () => {
+      expect(req.context.db.sequelize.transaction).to.have.been.called;
+      // With(
+      //   match(
+      //     async () =>
+      //       await req.context.models.Holiday.update(
+      //         { ...req.body.holiday },
+      //         {
+      //           where: { id: req.params.holidayId },
+      //         },
+      //       ),
+      //   ),
+      // );
+    });
+
+    it('calls Holiday.findAll', () => {
+      expect(mockHoliday.findAll).to.have.been.called;
+    });
+    it('calls Holiday.create', () => {
+      expect(mockHoliday.create).to.have.been.called;
+    });
+
+    it('called send', async () => {
+      expect(sendStub).to.have.been.called;
+    });
+  });
+
+  xcontext('newHolidayService [Error]', () => {
+    let handleErrorStub;
+    before(async () => {
+      handleErrorStub = stub(Helpers, 'handleError');
+      mockHoliday.create = stub().throws();
+      await newHolidayService(req, res);
+    });
+
+    after(restore);
+
+    it('called handleError', async () => {
+      expect(handleErrorStub).to.have.been.called;
+    });
+  });
 });
