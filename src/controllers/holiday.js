@@ -55,6 +55,7 @@ const newHoliday = async (req, res) => {
         }),
   );
 };
+// const newHoliday = async (req, res) => await newHolidayService(req, res);
 
 const deleteHoliday = async (req, res) =>
   await req.context.models.Holiday.destroy({

@@ -23,9 +23,9 @@
   },
   "homepage": "https://github.com/basselalsayed/ridgewell-backend#readme",
   "dependencies": {
-    "@babel/core": "^7.10.4",
+    "@babel/core": "^7.11.1",
     "@babel/node": "^7.10.4",
-    "@babel/preset-env": "^7.10.4",
+    "@babel/preset-env": "^7.11.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
@@ -33,20 +33,20 @@
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.3.0",
     "pg-hstore": "^2.3.3",
-    "sequelize": "^6.3.0",
+    "sequelize": "^6.3.4",
     "sequelize-cli": "^6.2.0",
-    "uuid": "^8.2.0"
+    "uuid": "^8.3.0"
   },
   "devDependencies": {
-    "@babel/plugin-transform-runtime": "^7.10.5",
+    "@babel/plugin-transform-runtime": "^7.11.0",
     "@babel/register": "^7.10.4",
     "chai": "^4.2.0",
     "faker": "^4.1.0",
-    "mocha": "^8.0.1",
+    "mocha": "^8.1.1",
     "nodemon": "^2.0.4",
     "regenerator-runtime": "^0.13.5",
     "sequelize-test-helpers": "^1.2.3",
-    "sinon": "^9.0.2",
+    "sinon": "^9.0.3",
     "sinon-chai": "^3.5.0"
   }
 }
