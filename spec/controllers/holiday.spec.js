@@ -11,7 +11,6 @@ import {
   updateHolidayService,
   newHolidayService,
 } from '../../src/services/holiday';
-import { sequelize, Sequelize } from 'sequelize-test-helpers';
 
 describe('src/services/holiday', () => {
   const req = {
@@ -29,11 +28,7 @@ describe('src/services/holiday', () => {
   after(restore);
 
   context('allHolidaysService', () => {
-    // let sendStub;
-
     before(async () => {
-      // sendStub = stub(Helpers, 'send').returns(true);
-
       await allHolidaysService(req, res);
     });
 
@@ -79,11 +74,7 @@ describe('src/services/holiday', () => {
   });
 
   context('getHolidayService', () => {
-    // let sendStub;
-
     before(async () => {
-      // sendStub = stub(Helpers, 'send').returns(true);
-
       await getHolidayService(req, res);
     });
 
@@ -117,11 +108,7 @@ describe('src/services/holiday', () => {
   });
 
   context('updateHolidayService', () => {
-    // let sendStub;
-
     before(async () => {
-      // sendStub = stub(Helpers, 'send').returns(true);
-
       await updateHolidayService(req, res);
     });
 
@@ -166,11 +153,7 @@ describe('src/services/holiday', () => {
   });
 
   context('newHolidayService', async () => {
-    // let sendStub;
-
     before(async () => {
-      // sendStub = stub(Helpers, 'send').returns(true);
-
       mockHoliday.findAll = stub().returns([0]);
       newHolidayService(req, res);
     });
@@ -233,7 +216,6 @@ describe('src/services/holiday', () => {
     });
 
     it('calls Holiday.findAll', () => {
-      // console.log('[findAll]', mockHoliday.findAll());
       expect(mockHoliday.findAll).to.have.been.called;
     });
     it('calls Holiday.create', () => {

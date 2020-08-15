@@ -24,7 +24,7 @@ const allHolidaysService = async (
 
     if (holidays) send(200, res, { holidays });
   } catch (error) {
-    // console.log(error);
+    console.log(error);
     handleError(res, error);
   }
 };
@@ -37,7 +37,7 @@ const getHolidayService = async (req, res) => {
 
     if (holiday) send(200, res, { holiday });
   } catch (error) {
-    // console.log(error);
+    console.log(error);
     handleError(res, error);
   }
 };
@@ -71,7 +71,7 @@ const updateHolidayService = async (
     if (response && response[0] > 0) send(200, res, { message: 'Success' });
     else send(300, res, { message: 'Nothing was updated' });
   } catch (error) {
-    // console.log(error);
+    console.log(error);
     handleError(error);
   }
 };
@@ -133,9 +133,9 @@ const newHolidayService = async (
         );
       }
     });
-    holiday && send(200, res, holiday);
+    if (holiday) send(200, res, holiday);
   } catch (error) {
-    // console.log(error);
+    console.log(error);
     handleError(error);
   }
 };

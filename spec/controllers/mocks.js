@@ -1,7 +1,7 @@
 import HolidayModel from '../../database/models/Holiday';
 import UserModel from '../../database/models/User';
-import RoleModel from '../../database/models/Role';
-import HolidayRequestModel from '../../database/models/HolidayRequest';
+// import RoleModel from '../../database/models/Role';
+// import HolidayRequestModel from '../../database/models/HolidayRequest';
 
 import { stub } from 'sinon';
 
@@ -9,11 +9,12 @@ import { dataTypes, makeMockModels, sequelize } from 'sequelize-test-helpers';
 import { Sequelize } from '../../database/models';
 
 const Holiday = HolidayModel(sequelize, dataTypes);
-const mockHolidayRequest = HolidayRequestModel(sequelize, dataTypes);
-const mockRole = RoleModel(sequelize, dataTypes);
-// const mockUser = UserModel(sequelize, dataTypes);
+// const mockHolidayRequest = HolidayRequestModel(sequelize, dataTypes);
+// const mockRole = RoleModel(sequelize, dataTypes);
+const User = UserModel(sequelize, dataTypes);
 
 const mockUser = {
+  ...User,
   create: stub().resolves(true),
   findAll: stub().resolves(true),
   findByLogin: stub().resolves(true),
@@ -40,10 +41,6 @@ const mockReq = {
         transaction: stub().resolves(true),
       },
       Sequelize,
-      // : {
-      //   ...Sequelize,
-      //   Op: stub().returns(true),
-      // },
     },
     models,
   },
