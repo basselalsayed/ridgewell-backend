@@ -76,4 +76,73 @@ const updateHolidayService = async (
   }
 };
 
-export { allHolidaysService, getHolidayService, updateHolidayService };
+const newHolidayService = async (
+  {
+    context: {
+      db: {
+        sequelize,
+        Sequelize: { Op },
+      },
+    },
+    body: { from, until },
+    userId,
+  },
+  res,
+) => {
+  try {
+    const where = {
+      [Op.or]: [
+        {
+          from: {
+            [Op.between]: [from, until],
+          },
+        },
+        {
+          until: {
+            [Op.between]: [from, until],
+          },
+        },
+      ],
+    };
+
+    const holiday = await sequelize.transaction(async () => {
+      const response = await sequelize.models.Holiday.findAll({ where });
+
+      console.log('[response]', response);
+
+      if (response.length === 2)
+        send(500, res, { message: 'Two Staff on Holiday already' });
+      else {
+        return await sequelize.models.Holiday.create(
+          {
+            from,
+            until,
+            userId,
+            holidayRequests: [
+              {
+                type: 'new',
+                from,
+                userId,
+                until,
+              },
+            ],
+          },
+          {
+            include: [sequelize.models.HolidayRequest],
+          },
+        );
+      }
+    });
+    holiday && send(200, res, holiday);
+  } catch (error) {
+    // console.log(error);
+    handleError(error);
+  }
+};
+
+export {
+  allHolidaysService,
+  getHolidayService,
+  newHolidayService,
+  updateHolidayService,
+};

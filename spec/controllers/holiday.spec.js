@@ -9,11 +9,13 @@ import {
   allHolidaysService,
   getHolidayService,
   updateHolidayService,
+  newHolidayService,
 } from '../../src/services/holiday';
+import { sequelize, Sequelize } from 'sequelize-test-helpers';
 
 describe('src/services/holiday', () => {
   const req = {
-    body: { confirmed: true },
+    body: { from: '1', until: '2', confirmed: true },
     params: { holidayId: 1 },
     ...mockReq,
   };
@@ -27,13 +29,18 @@ describe('src/services/holiday', () => {
   after(restore);
 
   context('allHolidaysService', () => {
+    // let sendStub;
+
     before(async () => {
+      // sendStub = stub(Helpers, 'send').returns(true);
+
       await allHolidaysService(req, res);
     });
 
     after(restore);
 
     it('called Holidays.findAll', async () => {
+      console.log('[mockHoliday]', mockHoliday.findByPk());
       expect(mockHoliday.findAll).to.have.been.calledWith(
         match({
           include: [
@@ -72,7 +79,11 @@ describe('src/services/holiday', () => {
   });
 
   context('getHolidayService', () => {
+    // let sendStub;
+
     before(async () => {
+      // sendStub = stub(Helpers, 'send').returns(true);
+
       await getHolidayService(req, res);
     });
 
@@ -106,7 +117,11 @@ describe('src/services/holiday', () => {
   });
 
   context('updateHolidayService', () => {
+    // let sendStub;
+
     before(async () => {
+      // sendStub = stub(Helpers, 'send').returns(true);
+
       await updateHolidayService(req, res);
     });
 
@@ -130,7 +145,7 @@ describe('src/services/holiday', () => {
       expect(mockHoliday.update).to.have.been.called;
     });
 
-    it('called send', async () => {
+    it('called send', () => {
       expect(sendStub).to.have.been.called;
     });
   });
@@ -150,45 +165,90 @@ describe('src/services/holiday', () => {
     });
   });
 
-  xcontext('newHolidayService', () => {
+  context('newHolidayService', async () => {
+    // let sendStub;
+
     before(async () => {
-      await newHolidayService(req, res);
+      // sendStub = stub(Helpers, 'send').returns(true);
+
+      mockHoliday.findAll = stub().returns([0]);
+      newHolidayService(req, res);
     });
 
     after(restore);
 
     it('calls sequelize.transaction', () => {
-      expect(req.context.db.sequelize.transaction).to.have.been.called;
-      // With(
-      //   match(
-      //     async () =>
-      //       await req.context.models.Holiday.update(
-      //         { ...req.body.holiday },
-      //         {
-      //           where: { id: req.params.holidayId },
-      //         },
-      //       ),
-      //   ),
-      // );
+      expect(req.context.db.sequelize.transaction).to.have.been.calledWith(
+        match(async () => {
+          const response = await req.context.db.sequelize.models.Holiday.findAll(
+            {
+              [req.context.db.Sequelize.Op.or]: [
+                {
+                  from: {
+                    [req.context.db.Sequelize.Op.between]: [
+                      req.body.from,
+                      req.body.until,
+                    ],
+                  },
+                },
+                {
+                  until: {
+                    [req.context.db.Sequelize.Op.between]: [
+                      req.body.from,
+                      req.body.until,
+                    ],
+                  },
+                },
+              ],
+            },
+          );
+
+          console.log('[response]', response);
+
+          if (response.length === 2)
+            send(500, res, { message: 'Two Staff on Holiday already' });
+          else {
+            const holiday = await req.context.db.sequelize.models.Holiday.create(
+              {
+                from: req.body.from,
+                until: req.body.until,
+                userId: req.userId,
+                holidayRequests: [
+                  {
+                    type: 'new',
+                    from: req.body.from,
+                    userId: req.userId,
+                    until: req.body.until,
+                  },
+                ],
+              },
+              {
+                include: [req.context.db.sequelize.models.HolidayRequest],
+              },
+            );
+            Helpers.send(200, res, holiday);
+          }
+        }),
+      );
     });
 
     it('calls Holiday.findAll', () => {
+      // console.log('[findAll]', mockHoliday.findAll());
       expect(mockHoliday.findAll).to.have.been.called;
     });
     it('calls Holiday.create', () => {
       expect(mockHoliday.create).to.have.been.called;
     });
-
     it('called send', async () => {
       expect(sendStub).to.have.been.called;
     });
   });
 
-  xcontext('newHolidayService [Error]', () => {
+  context('newHolidayService [Error]', () => {
     let handleErrorStub;
     before(async () => {
       handleErrorStub = stub(Helpers, 'handleError');
-      mockHoliday.create = stub().throws();
+      mockHoliday.findall = stub().throws();
       await newHolidayService(req, res);
     });
 
