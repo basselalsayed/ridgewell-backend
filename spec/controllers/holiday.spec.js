@@ -10,6 +10,7 @@ import {
   getHolidayService,
   updateHolidayService,
   newHolidayService,
+  deleteHolidayService,
 } from '../../src/services/holiday';
 
 describe('src/services/holiday', () => {
@@ -35,7 +36,6 @@ describe('src/services/holiday', () => {
     after(restore);
 
     it('called Holidays.findAll', async () => {
-      console.log('[mockHoliday]', mockHoliday.findByPk());
       expect(mockHoliday.findAll).to.have.been.calledWith(
         match({
           include: [
@@ -152,9 +152,9 @@ describe('src/services/holiday', () => {
     });
   });
 
-  context('newHolidayService', async () => {
-    before(async () => {
-      mockHoliday.findAll = stub().returns([0]);
+  context('newHolidayService', () => {
+    before(() => {
+      mockHoliday.findAll = stub().returns(new Array()); // array length < 2 will continue creation
       newHolidayService(req, res);
     });
 
@@ -185,8 +185,6 @@ describe('src/services/holiday', () => {
               ],
             },
           );
-
-          console.log('[response]', response);
 
           if (response.length === 2)
             send(500, res, { message: 'Two Staff on Holiday already' });
@@ -232,6 +230,52 @@ describe('src/services/holiday', () => {
       handleErrorStub = stub(Helpers, 'handleError');
       mockHoliday.findall = stub().throws();
       await newHolidayService(req, res);
+    });
+
+    after(restore);
+
+    it('called handleError', async () => {
+      expect(handleErrorStub).to.have.been.called;
+    });
+  });
+
+  context('deleteHolidayService', () => {
+    before(() => {
+      deleteHolidayService(req, res);
+    });
+
+    after(restore);
+
+    it('calls sequelize.transaction', () => {
+      expect(req.context.db.sequelize.transaction).to.have.been.calledWith(
+        match(
+          async () =>
+            await req.context.models.Holiday.destroy({
+              where: { id: req.params.holidayId },
+            }),
+        ),
+      );
+    });
+
+    it('calls Holiday.destroy', () => {
+      expect(mockHoliday.destroy).to.have.been.calledWith(
+        match({
+          where: { id: req.params.holidayId },
+        }),
+      );
+    });
+
+    it('called send', () => {
+      expect(sendStub).to.have.been.called;
+    });
+  });
+
+  context('deleteHolidayService [Error]', () => {
+    let handleErrorStub;
+    before(async () => {
+      handleErrorStub = stub(Helpers, 'handleError');
+      req.context.db.sequelize.transaction = stub().throws();
+      await deleteHolidayService(req, res);
     });
 
     after(restore);
