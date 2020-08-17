@@ -154,7 +154,7 @@ describe('src/services/holiday', () => {
 
   context('newHolidayService', async () => {
     before(async () => {
-      mockHoliday.findAll = stub().returns([0]);
+      mockHoliday.findAll = stub().returns(new Array()); // array length < 2 will continue creation
       newHolidayService(req, res);
     });
 
