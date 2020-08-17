@@ -108,8 +108,6 @@ const newHolidayService = async (
     const holiday = await sequelize.transaction(async () => {
       const response = await sequelize.models.Holiday.findAll({ where });
 
-      console.log('[response]', response);
-
       if (response.length === 2)
         send(500, res, { message: 'Two Staff on Holiday already' });
       else {
@@ -140,8 +138,36 @@ const newHolidayService = async (
   }
 };
 
+const deleteHolidayService = async (
+  {
+    context: {
+      db: { sequelize },
+    },
+    params,
+  },
+  res,
+) => {
+  try {
+    const response = await sequelize.transaction(
+      async () =>
+        await sequelize.models.Holiday.destroy({
+          where: { id: params.holidayId },
+        }),
+    );
+
+    console.log('[Response]', response);
+
+    if (response > 0) send(200, res, { message: 'Success' });
+    else send(300, res, { message: 'Nothing was deleted' });
+  } catch (error) {
+    console.log(error);
+    handleError(error);
+  }
+};
+
 export {
   allHolidaysService,
+  deleteHolidayService,
   getHolidayService,
   newHolidayService,
   updateHolidayService,

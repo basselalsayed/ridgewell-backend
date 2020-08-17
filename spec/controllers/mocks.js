@@ -23,6 +23,7 @@ const mockUser = {
 const mockHoliday = {
   ...Holiday,
   create: stub().resolves(true),
+  destroy: stub().resolves(true),
   findAll: stub().resolves(true),
   findByPk: stub().resolves(true),
   update: stub().resolves(true),

@@ -10,6 +10,7 @@ import {
   getHolidayService,
   updateHolidayService,
   newHolidayService,
+  deleteHolidayService,
 } from '../../src/services/holiday';
 
 describe('src/services/holiday', () => {
@@ -151,8 +152,8 @@ describe('src/services/holiday', () => {
     });
   });
 
-  context('newHolidayService', async () => {
-    before(async () => {
+  context('newHolidayService', () => {
+    before(() => {
       mockHoliday.findAll = stub().returns(new Array()); // array length < 2 will continue creation
       newHolidayService(req, res);
     });
@@ -184,8 +185,6 @@ describe('src/services/holiday', () => {
               ],
             },
           );
-
-          console.log('[response]', response);
 
           if (response.length === 2)
             send(500, res, { message: 'Two Staff on Holiday already' });
@@ -241,8 +240,8 @@ describe('src/services/holiday', () => {
   });
 
   context('deleteHolidayService', () => {
-    before(async () => {
-      await deleteHolidayService(req, res);
+    before(() => {
+      deleteHolidayService(req, res);
     });
 
     after(restore);
