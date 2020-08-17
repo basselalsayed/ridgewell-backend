@@ -155,8 +155,6 @@ const deleteHolidayService = async (
         }),
     );
 
-    console.log('[Response]', response);
-
     if (response > 0) send(200, res, { message: 'Success' });
     else send(300, res, { message: 'Nothing was deleted' });
   } catch (error) {
