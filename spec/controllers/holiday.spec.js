@@ -29,8 +29,8 @@ describe('src/services/holiday', () => {
   after(restore);
 
   context('allHolidaysService', () => {
-    before(async () => {
-      await allHolidaysService(req, res);
+    before(() => {
+      allHolidaysService(req, res);
     });
 
     after(restore);
@@ -59,14 +59,17 @@ describe('src/services/holiday', () => {
 
   context('allHolidaysService [Error]', () => {
     let handleErrorStub;
-    before(async () => {
+    before(() => {
       handleErrorStub = stub(Helpers, 'handleError');
       mockHoliday.findAll = stub().throws();
 
-      await allHolidaysService(req, res);
+      allHolidaysService(req, res);
     });
 
-    after(restore);
+    after(() => {
+      mockHoliday.findAll = stub().returns(new Array());
+      restore;
+    });
 
     it('called handleError', async () => {
       expect(handleErrorStub).to.have.been.called;
@@ -93,11 +96,11 @@ describe('src/services/holiday', () => {
 
   context('getHolidayService [Error]', () => {
     let handleErrorStub;
-    before(async () => {
+    before(() => {
       handleErrorStub = stub(Helpers, 'handleError');
       mockHoliday.findByPk = stub().throws();
 
-      await getHolidayService(req, res);
+      getHolidayService(req, res);
     });
 
     after(restore);
@@ -108,8 +111,8 @@ describe('src/services/holiday', () => {
   });
 
   context('updateHolidayService', () => {
-    before(async () => {
-      await updateHolidayService(req, res);
+    before(() => {
+      updateHolidayService(req, res);
     });
 
     after(restore);
@@ -118,7 +121,7 @@ describe('src/services/holiday', () => {
       expect(req.context.db.sequelize.transaction).to.have.been.calledWith(
         match(
           async () =>
-            await req.context.models.Holiday.update(
+            await req.context.db.sequelize.models.Holiday.update(
               { ...req.body.holiday },
               {
                 where: { id: req.params.holidayId },
@@ -139,10 +142,10 @@ describe('src/services/holiday', () => {
 
   context('updateHolidayService [Error]', () => {
     let handleErrorStub;
-    before(async () => {
+    before(() => {
       handleErrorStub = stub(Helpers, 'handleError');
       req.context.db.sequelize.transaction = stub().throws();
-      await updateHolidayService(req, res);
+      updateHolidayService(req, res);
     });
 
     after(restore);
@@ -153,8 +156,7 @@ describe('src/services/holiday', () => {
   });
 
   context('newHolidayService', () => {
-    before(() => {
-      mockHoliday.findAll = stub().returns(new Array()); // array length < 2 will continue creation
+    before(async () => {
       newHolidayService(req, res);
     });
 
@@ -228,11 +230,13 @@ describe('src/services/holiday', () => {
     let handleErrorStub;
     before(async () => {
       handleErrorStub = stub(Helpers, 'handleError');
-      mockHoliday.findall = stub().throws();
+      mockHoliday.findAll = stub().returns([0, 0]);
       await newHolidayService(req, res);
     });
 
-    after(restore);
+    after(() => {
+      restore;
+    });
 
     it('called handleError', async () => {
       expect(handleErrorStub).to.have.been.called;
@@ -250,7 +254,7 @@ describe('src/services/holiday', () => {
       expect(req.context.db.sequelize.transaction).to.have.been.calledWith(
         match(
           async () =>
-            await req.context.models.Holiday.destroy({
+            await req.context.db.sequelize.models.Holiday.destroy({
               where: { id: req.params.holidayId },
             }),
         ),
@@ -272,10 +276,11 @@ describe('src/services/holiday', () => {
 
   context('deleteHolidayService [Error]', () => {
     let handleErrorStub;
-    before(async () => {
+    before(() => {
       handleErrorStub = stub(Helpers, 'handleError');
-      req.context.db.sequelize.transaction = stub().throws();
-      await deleteHolidayService(req, res);
+      mockHoliday.destroy = stub().throws();
+      // req.context.db.sequelize.transaction = stub().throws();
+      deleteHolidayService(req, res);
     });
 
     after(restore);
