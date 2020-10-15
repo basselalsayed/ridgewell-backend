@@ -83,8 +83,8 @@ const initialize = async () => {
         password: hashSync(process.env.ADMIN_1_PASS, 8),
         Holidays: [
           {
-            from: '2020-07-20',
-            until: '2020-07-23',
+            from: '2020-10-20',
+            until: '2020-10-23',
           },
         ],
       },
@@ -104,8 +104,8 @@ const initialize = async () => {
         password: hashSync(process.env.ADMIN_2_PASS, 8),
         Holidays: [
           {
-            from: '2020-09-20',
-            until: '2020-09-23',
+            from: '2020-11-20',
+            until: '2020-11-23',
           },
         ],
       },
@@ -125,8 +125,8 @@ const initialize = async () => {
         password: hashSync('000000', 8),
         Holidays: [
           {
-            from: '2020-08-20',
-            until: '2020-08-23',
+            from: '2020-10-20',
+            until: '2020-10-23',
           },
         ],
       },
@@ -146,8 +146,8 @@ const initialize = async () => {
         password: hashSync('000000', 8),
         Holidays: [
           {
-            from: '2020-08-15',
-            until: '2020-08-25',
+            from: '2020-11-15',
+            until: '2020-11-25',
           },
         ],
       },
@@ -156,8 +156,8 @@ const initialize = async () => {
 
     await HolidayRequest.create({
       type: 'update',
-      from: '2020-08-10',
-      until: '2020-08-14',
+      from: '2020-11-16',
+      until: '2020-11-26',
       owner: '4',
       holidayId: '4',
     });
