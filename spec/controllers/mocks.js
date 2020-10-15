@@ -24,7 +24,7 @@ const mockHoliday = {
   ...Holiday,
   create: stub().resolves(true),
   destroy: stub().resolves(true),
-  findAll: stub().resolves(true),
+  findAll: stub().returns(new Array()),
   findByPk: stub().resolves(true),
   update: stub().resolves(true),
 };

@@ -24,7 +24,7 @@ const allHolidaysService = async (
 
     if (holidays) send(200, res, { holidays });
   } catch (error) {
-    console.log(error);
+    console.info(error);
     handleError(res, error);
   }
 };
@@ -37,7 +37,7 @@ const getHolidayService = async (req, res) => {
 
     if (holiday) send(200, res, { holiday });
   } catch (error) {
-    console.log(error);
+    console.info(error);
     handleError(res, error);
   }
 };
@@ -63,16 +63,16 @@ const updateHolidayService = async (
           },
         );
       else {
-        console.log(res, 'No Holiday Found');
-        send(300, res, { message: 'No Holiday Found' });
+        console.info('[No Holiday Found Response]', res);
+        throw { code: 300, message: 'No Holiday Found' };
       }
     });
 
     if (response && response[0] > 0) send(200, res, { message: 'Success' });
-    else send(300, res, { message: 'Nothing was updated' });
+    else throw { code: 300, message: 'Nothing was updated' };
   } catch (error) {
-    console.log(error);
-    handleError(error);
+    console.info(error);
+    handleError(res, error);
   }
 };
 
@@ -108,9 +108,9 @@ const newHolidayService = async (
     const holiday = await sequelize.transaction(async () => {
       const response = await sequelize.models.Holiday.findAll({ where });
 
-      if (response.length === 2)
-        send(500, res, { message: 'Two Staff on Holiday already' });
-      else {
+      if (response.length === 2) {
+        throw { code: 300, message: 'Two Staff on Holiday already' };
+      } else
         return await sequelize.models.Holiday.create(
           {
             from,
@@ -129,12 +129,11 @@ const newHolidayService = async (
             include: [sequelize.models.HolidayRequest],
           },
         );
-      }
     });
     if (holiday) send(200, res, holiday);
   } catch (error) {
-    console.log(error);
-    handleError(error);
+    console.info(error);
+    handleError(res, error);
   }
 };
 
@@ -156,10 +155,10 @@ const deleteHolidayService = async (
     );
 
     if (response > 0) send(200, res, { message: 'Success' });
-    else send(300, res, { message: 'Nothing was deleted' });
+    else throw { code: 300, message: 'Nothing was deleted' };
   } catch (error) {
-    console.log(error);
-    handleError(error);
+    console.info(error);
+    handleError(res, error);
   }
 };
 

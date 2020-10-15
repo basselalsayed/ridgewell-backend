@@ -6,6 +6,6 @@ const send = (code, res, object) => {
   res.status(code).send(object);
 };
 
-const handleError = (res, err) => send(500, res, { message: err.message });
-
+const handleError = (res, { code, message }) =>
+  send(code || 500, res, { message });
 export { handleError, send };
