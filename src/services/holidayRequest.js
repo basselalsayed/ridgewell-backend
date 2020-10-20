@@ -17,12 +17,14 @@ const confirmHolidayRequest = async (
         params.requestId,
       );
 
-      if (request.type === 'update') {
+      const { from, holidayId, type, until } = request;
+
+      if (type === 'update') {
         updateHolidayService(
           {
             context: { db: { sequelize } },
-            body: { from: request.from, until: request.until },
-            params: { holidayId: request.holidayId },
+            body: { from, until },
+            params: { holidayId },
           },
           res,
         );
@@ -30,7 +32,10 @@ const confirmHolidayRequest = async (
       }
     });
     console.log('[response]', response);
-  } catch (error) {}
+  } catch (error) {
+    console.info(error);
+    handleError(res, error);
+  }
 };
 
 export { confirmHolidayRequest };
