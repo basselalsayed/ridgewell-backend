@@ -1,15 +1,24 @@
 import { GeneralError } from '../utils/errors';
 
 const handleErrors = (error, req, res, next) => {
-  console.log('[Request URL]', req.url);
-  console.log('[Request Method', req.method);
-  console.log('[Request Params', req.params);
-  console.log('[Error]', error);
+  console.log(`\x1b[31m[${new Date(Date.now())}]\n\x1b[0m`);
+  console.log('\x1b[31m[Error]\n\x1b[0m', `\x1b[33m${error}\n\x1b[0m`);
+  console.log('\x1b[31m[Request URL]\n\x1b[0m', `\x1b[33m${req.url}\n\x1b[0m`);
+  console.log(
+    '\x1b[31m[Request Method]\n\x1b[0m',
+    `\x1b[33m${req.method}\n\x1b[0m`,
+  );
+  // replace with req.userId
+  console.log(
+    '\x1b[31m[Request Params]\n\x1b[0m',
+    `\x1b[33m${req.params}\n\x1b[0m`,
+  );
 
   res.statusMessage = error.message;
 
   if (error instanceof GeneralError) return res.status(error.getCode()).send();
-  else return res.status(500).send();
+
+  return res.status(500).send();
 };
 
 export default handleErrors;
