@@ -1,3 +1,4 @@
+import { send } from '../controllers/helpers';
 import { GeneralError } from '../utils/errors';
 
 const handleErrors = (error, req, res, next) => {
@@ -16,9 +17,9 @@ const handleErrors = (error, req, res, next) => {
 
   res.statusMessage = error.message;
 
-  if (error instanceof GeneralError) return res.status(error.getCode()).send();
+  if (error instanceof GeneralError) return send(error.getCode(), res);
 
-  return res.status(500).send();
+  return send(500, res);
 };
 
 export default handleErrors;
