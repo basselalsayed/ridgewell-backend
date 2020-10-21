@@ -1,20 +1,11 @@
 'use strict';
-import { signIn, signUp } from '../controllers';
-import {
-  checkDuplicateUsernameOrEmail,
-  checkRolesExisted,
-} from '../middleware';
+import { signIn } from '../controllers';
+
 import { Router } from 'express';
 
 const router = Router();
 
-router.post('/signin', signIn);
-
-router.post(
-  '/signup',
-  [checkDuplicateUsernameOrEmail, checkRolesExisted],
-  signUp,
-);
+router.post('/', signIn);
 
 // router.get('/', async (req, res) => {
 //   const user = await req.context.models.User.findByPk(req.context.user.id);

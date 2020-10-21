@@ -16,7 +16,7 @@ router.get('/', [verifyToken, isAdmin], getAllRequests);
 router.post('/upd/:holidayId', [verifyToken, isOwner], newUpdateRequest);
 
 router.put(
-  '/confirm/:requestId',
+  '/:requestId/confirm',
   [verifyToken, isAdmin],
   confirmHolidayRequest,
 );
