@@ -1,19 +1,14 @@
+import chalk from 'chalk';
 import { send } from '../controllers/helpers';
 import { GeneralError } from '../utils/errors';
 
 const handleErrors = (error, req, res, next) => {
-  console.log(`\x1b[31m[${new Date(Date.now())}]\n\x1b[0m`);
-  console.log('\x1b[31m[Error]\n\x1b[0m', `\x1b[33m${error}\n\x1b[0m`);
-  console.log('\x1b[31m[Request URL]\n\x1b[0m', `\x1b[33m${req.url}\n\x1b[0m`);
-  console.log(
-    '\x1b[31m[Request Method]\n\x1b[0m',
-    `\x1b[33m${req.method}\n\x1b[0m`,
-  );
-  // replace with req.userId
-  console.log(
-    '\x1b[31m[Request Params]\n\x1b[0m',
-    `\x1b[33m${req.params}\n\x1b[0m`,
-  );
+  console.log(chalk.red(new Date(Date.now())));
+  console.log(chalk.red('[Error]'), chalk.yellow(error));
+  console.log(chalk.red('[Request URL]'), chalk.yellow(req.url));
+  console.log(chalk.red('[Request Method]'), chalk.yellow(req.method));
+  console.log(chalk.red('[Request Params]'), chalk.yellow(req.params));
+  console.log(chalk.yellow(error.stack));
 
   res.statusMessage = error.message;
 
