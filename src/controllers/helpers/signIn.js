@@ -37,4 +37,29 @@ const validPass = (res, user) => {
     .then(obj => send(200, res, obj));
 };
 
-export { invalidPass, noUser, validPass };
+const buildUserObjectResponse = user => {
+  const { email, id, Roles, username } = user;
+
+  let accessToken = getAccessToken(id);
+
+  let roles = Roles.map(role => `ROLE_${role.name.toUpperCase()}`);
+
+  return {
+    message: 'Success!',
+    user: {
+      id,
+      username,
+      email,
+      roles,
+      accessToken,
+    },
+  };
+};
+
+export {
+  buildUserObjectResponse,
+  getAccessToken,
+  invalidPass,
+  noUser,
+  validPass,
+};

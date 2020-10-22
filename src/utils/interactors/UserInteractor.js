@@ -5,8 +5,6 @@ class UserInteractor extends Interactor {
     super();
   }
 
-  async getRoles() {}
-
   async getUser({ username, email }) {
     const login = username || email;
 
