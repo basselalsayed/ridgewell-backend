@@ -14,7 +14,9 @@ class GeneralError extends Error {
     if (this instanceof NotUpdated) {
       return 404;
     }
-
+    if (this instanceof Unauthorized) {
+      return 401;
+    }
     return 500;
   }
 }
@@ -22,5 +24,6 @@ class GeneralError extends Error {
 class BadRequest extends GeneralError {}
 class NotFound extends GeneralError {}
 class NotUpdated extends GeneralError {}
+class Unauthorized extends GeneralError {}
 
-export { GeneralError, BadRequest, NotFound, NotUpdated };
+export { GeneralError, BadRequest, NotFound, NotUpdated, Unauthorized };
