@@ -1,14 +1,14 @@
-import chalk from 'chalk';
+import { red, yellow } from 'chalk';
 import { send } from '../controllers/helpers';
 import { GeneralError } from '../utils/errors';
 
-const handleErrors = (error, req, res, next) => {
-  console.log(chalk.red(new Date(Date.now())));
-  console.log(chalk.red('[Error]'), chalk.yellow(error));
-  console.log(chalk.red('[Request URL]'), chalk.yellow(req.url));
-  console.log(chalk.red('[Request Method]'), chalk.yellow(req.method));
-  console.log(chalk.red('[Request Params]'), chalk.yellow(req.params));
-  console.log(chalk.yellow(error.stack));
+const handleErrors = (error, { method, params, url }, res, next) => {
+  console.log(red(new Date(Date.now())));
+  console.log(red('[Error]:'), yellow(error));
+  console.log(red('[Request URL]:'), yellow(url));
+  console.log(red('[Request Method]:'), yellow(method));
+  console.log(red('[Request Params]:'), yellow(params));
+  console.log(yellow(error.stack));
 
   res.statusMessage = error.message;
 
