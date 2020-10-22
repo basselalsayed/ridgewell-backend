@@ -8,6 +8,7 @@ import db from '../database/models';
 import routes from './routes';
 
 import { hashSync } from 'bcryptjs';
+import handleErrors from './middleware/handleError';
 
 const app = express();
 
@@ -45,6 +46,8 @@ app.use('/session', routes.session);
 app.use('/users', routes.user);
 app.use('/holidays', routes.holiday);
 app.use('/requests', routes.holidayRequest);
+
+app.use(handleErrors);
 
 const eraseDatabaseOnSync = true;
 
