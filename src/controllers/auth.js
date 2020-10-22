@@ -11,11 +11,11 @@ const signUp = async (req, res) => {
   await signUpService(req, res);
 };
 
-const signIn = async (req, res) => {
+const signInOld = async (req, res) => {
   await signInService(req, res);
 };
 
-const signInNew = async (req, res, next) => {
+const signIn = async (req, res, next) => {
   const {
     body: { username, email, password },
   } = req;
@@ -32,4 +32,4 @@ const signInNew = async (req, res, next) => {
   }
 };
 
-export { signIn, signInNew, signUp };
+export { signIn, signUp };
