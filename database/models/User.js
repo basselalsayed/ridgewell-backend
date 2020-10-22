@@ -1,6 +1,7 @@
 'use strict';
 
 import { Sequelize } from 'sequelize';
+import { NotFound } from '../../src/utils/errors';
 
 const { Op } = Sequelize;
 
@@ -61,12 +62,22 @@ export default (sequelize, DataTypes) => {
     });
   };
 
-  User.findByLogin = async login =>
-    await User.findOne({
+  User.findByLogin = async login => {
+    const user = await User.findOne({
       where: {
         [Op.or]: [{ username: login }, { email: login }],
       },
+      include: [
+        {
+          association: 'Roles',
+          attributes: ['name'],
+        },
+      ],
     });
+
+    if (!user) throw new NotFound('No User Found');
+    else return user;
+  };
 
   return User;
 };
