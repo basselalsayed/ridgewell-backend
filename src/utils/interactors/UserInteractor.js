@@ -8,7 +8,9 @@ class UserInteractor extends Interactor {
   async getUser({ username, email }) {
     const login = username || email;
 
-    return await this.User.findByLogin(login);
+    return await this.sequelize.transaction(async () =>
+      this.User.findByLogin(login),
+    );
   }
 }
 export { UserInteractor };
