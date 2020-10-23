@@ -1,4 +1,5 @@
 import db from '../../database/models';
+import { NotFound } from '../utils/errors';
 
 const { User } = db.sequelize.models;
 const ROLES = ['user', 'admin'];
@@ -35,20 +36,15 @@ const checkDuplicateUsernameOrEmail = (req, res, next) => {
   });
 };
 
-const checkRolesExisted = (req, res, next) => {
-  if (req.body.roles) {
-    const roles = req.body.roles;
+const checkRolesExist = ({ body: { roles } }, res, next) => {
+  if (roles) {
     roles.forEach(role => {
-      if (!ROLES.includes(role)) {
-        res.status(400).send({
-          message: 'Failed! Role does not exist = ' + role,
-        });
-        return;
-      }
+      if (!ROLES.includes(role.toLowerCase()))
+        throw new NotFound(`Failed. Role '${role}' does not exist.`);
     });
   }
 
   next();
 };
 
-export { checkDuplicateUsernameOrEmail, checkRolesExisted };
+export { checkDuplicateUsernameOrEmail, checkRolesExist };
