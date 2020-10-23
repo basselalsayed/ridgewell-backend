@@ -2,6 +2,7 @@
 
 import { Sequelize } from 'sequelize';
 import { NotFound } from '../../src/utils/errors';
+import { hashSync } from 'bcryptjs';
 
 const { Op } = Sequelize;
 
@@ -18,6 +19,9 @@ export default (sequelize, DataTypes) => {
     email: {
       type: DataTypes.STRING,
       unique: true,
+      set(givenInput) {
+        this.setDataValue('email', hashSync(givenInput, 8));
+      },
       allowNull: false,
       validate: {
         notEmpty: true,
@@ -25,6 +29,9 @@ export default (sequelize, DataTypes) => {
     },
     password: {
       type: DataTypes.STRING,
+      set(givenInput) {
+        this.setDataValue('password', hashSync(givenInput, 8));
+      },
       allowNull: false,
       validate: {
         notEmpty: true,
