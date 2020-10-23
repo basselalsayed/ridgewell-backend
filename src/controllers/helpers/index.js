@@ -8,4 +8,5 @@ const send = (code, res, object) => {
 
 const handleError = (res, { code, message }) =>
   send(code || 500, res, { message });
+
 export { handleError, send };

@@ -14,11 +14,11 @@ const router = Router();
 
 router.get('/', [verifyToken], getAll);
 
+router.post('/', [verifyToken], newHoliday);
+
 router.get('/:holidayId', [verifyToken], getOne);
 
 router.put('/:holidayId', [verifyToken, isAdmin], updateHoliday);
-
-router.post('/', [verifyToken], newHoliday);
 
 router.delete('/:holidayId', [verifyToken, isAdmin], deleteHoliday);
 
