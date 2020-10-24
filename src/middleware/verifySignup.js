@@ -3,14 +3,14 @@ import { UserInteractor } from '../utils/interactors';
 
 const ROLES = ['user', 'admin'];
 
-const checkDuplicateUsernameOrEmail = (
+const checkDuplicateUsernameOrEmail = async (
   { body: { email, username } },
   res,
   next,
 ) => {
   const userInteractor = new UserInteractor();
 
-  Promise.all([
+  await Promise.all([
     userInteractor.checkUsernameExists(username),
     userInteractor.checkEmailExists(email),
   ])
