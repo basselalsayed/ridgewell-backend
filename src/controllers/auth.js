@@ -11,6 +11,26 @@ const signUp = async (req, res) => {
   await signUpService(req, res);
 };
 
+const signUpNew = async (req, res, next) => {
+  const {
+    body: { username, email, roles = ['user'], password },
+  } = req;
+
+  try {
+    const user = await userInteractor.newUser({
+      username,
+      email,
+      roles,
+      password,
+    });
+
+    send(200, res, buildUserObjectResponse(user));
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
 const signIn = async (req, res, next) => {
   const {
     body: { username, email, password },
@@ -28,4 +48,4 @@ const signIn = async (req, res, next) => {
   }
 };
 
-export { signIn, signUp };
+export { signIn, signUp, signUpNew };
