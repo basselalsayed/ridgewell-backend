@@ -10,11 +10,9 @@ const handleErrors = (error, { method, params, url }, res, next) => {
   console.log(red('[Request Params]:'), yellow(params));
   console.log(yellow(error.stack));
 
-  res.statusMessage = error.message;
+  if (error instanceof GeneralError) return send(error.getCode(), res, error);
 
-  if (error instanceof GeneralError) return send(error.getCode(), res);
-
-  return send(500, res);
+  return send(500, res, error);
 };
 
 export default handleErrors;
