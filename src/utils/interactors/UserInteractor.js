@@ -1,9 +1,20 @@
 import { Interactor } from './Interactor';
 import { verifyRole } from '../../controllers/helpers';
+import { Conflict } from '../errors';
 
 class UserInteractor extends Interactor {
   constructor() {
     super();
+  }
+
+  async checkUsernameExists(username) {
+    return await this.User.findOne({
+      where: {
+        username,
+      },
+    }).then(user => {
+      if (user) throw new Conflict('Failed. Username already in use.');
+    });
   }
 
   async getUser({ username, email }) {
