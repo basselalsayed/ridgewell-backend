@@ -12,7 +12,7 @@ const {
 const registerSuccess = res =>
   send(200, res, { message: 'User was registered successfully!' });
 
-const hasRole = async (user, roles) =>
+const verifyRole = async (user, roles) =>
   await Role.findAll({
     where: {
       name: {
@@ -24,6 +24,6 @@ const hasRole = async (user, roles) =>
 const setRoles = async (user, role) => await user.setRoles(role);
 
 const handleRole = (user, roles) =>
-  roles ? hasRole(user, roles) : setRoles(user, []);
+  roles ? verifyRole(user, roles) : setRoles(user, []);
 
-export { hasRole, handleRole, registerSuccess };
+export { verifyRole, handleRole, registerSuccess };
