@@ -3,15 +3,9 @@ import { compareSync } from 'bcryptjs';
 import { Unauthorized } from '../utils/errors';
 import { buildUserObjectResponse, send } from './helpers';
 
-import { signUpService } from '../services/auth';
-
 const userInteractor = new UserInteractor();
 
-const signUp = async (req, res) => {
-  await signUpService(req, res);
-};
-
-const signUpNew = async (req, res, next) => {
+const signUp = async (req, res, next) => {
   const {
     body: { username, email, roles = ['user'], password },
   } = req;
@@ -48,4 +42,4 @@ const signIn = async (req, res, next) => {
   }
 };
 
-export { signIn, signUp, signUpNew };
+export { signIn, signUp };
