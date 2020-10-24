@@ -17,6 +17,16 @@ class UserInteractor extends Interactor {
     });
   }
 
+  async checkEmailExists(email) {
+    return await this.User.findOne({
+      where: {
+        email,
+      },
+    }).then(user => {
+      if (user) throw new Conflict('Failed. Email already in use.');
+    });
+  }
+
   async getUser({ username, email }) {
     const login = username || email;
 
