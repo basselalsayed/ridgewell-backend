@@ -1,3 +1,4 @@
+import { NotFound } from '../errors';
 import { Interactor } from './Interactor';
 
 class HolidayInteractor extends Interactor {
@@ -20,6 +21,12 @@ class HolidayInteractor extends Interactor {
             },
           ],
         }),
+    );
+  }
+
+  async getOne(id) {
+    return await this.sequelize.transaction(
+      async () => await this.Holiday.findByPk(id),
     );
   }
 }
