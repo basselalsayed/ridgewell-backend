@@ -55,4 +55,5 @@ const res = (() => {
   return mockRes;
 })();
 
-export { mockHoliday, mockUser, models, mockReq, res };
+const mockNext = stub().returns(true);
+export { mockHoliday, mockUser, models, mockReq, mockNext, res };

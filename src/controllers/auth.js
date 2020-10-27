@@ -1,4 +1,3 @@
-import { UserInteractor } from '../utils/interactors';
 import { compareSync } from 'bcryptjs';
 import { Unauthorized } from '../utils/errors';
 import { buildUserObjectResponse, send } from './helpers';
