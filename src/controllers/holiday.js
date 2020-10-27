@@ -10,7 +10,7 @@ const getAll = async (req, res, next) => {
   try {
     const holidays = await req.holidayInteractor.getAll();
 
-    if (holidays) send(200, res, { holidays });
+    if (holidays) send(200, res, holidays);
     next();
   } catch (error) {
     next(error);
