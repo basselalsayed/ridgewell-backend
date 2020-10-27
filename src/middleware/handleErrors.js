@@ -15,4 +15,4 @@ const handleErrors = (error, { method, params, url }, res, next) => {
   return send(500, res, error);
 };
 
-export default handleErrors;
+export { handleErrors };
