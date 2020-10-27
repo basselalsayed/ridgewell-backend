@@ -8,23 +8,29 @@ class UserInteractor extends Interactor {
   }
 
   async checkUsernameExists(username) {
-    return await this.User.findOne({
-      where: {
-        username,
-      },
-    }).then(user => {
-      if (user) throw new Conflict('Failed. Username already in use.');
-    });
+    return await this.sequelize.transaction(
+      async () =>
+        await this.User.findOne({
+          where: {
+            username,
+          },
+        }).then(user => {
+          if (user) throw new Conflict('Failed. Username already in use.');
+        }),
+    );
   }
 
   async checkEmailExists(email) {
-    return await this.User.findOne({
-      where: {
-        email,
-      },
-    }).then(user => {
-      if (user) throw new Conflict('Failed. Email already in use.');
-    });
+    return await this.sequelize.transaction(
+      async () =>
+        await this.User.findOne({
+          where: {
+            email,
+          },
+        }).then(user => {
+          if (user) throw new Conflict('Failed. Email already in use.');
+        }),
+    );
   }
 
   async getUser({ username, email }) {
@@ -49,4 +55,5 @@ class UserInteractor extends Interactor {
     });
   }
 }
+
 export { UserInteractor };
