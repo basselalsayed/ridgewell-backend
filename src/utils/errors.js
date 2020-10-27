@@ -8,6 +8,9 @@ class GeneralError extends Error {
     if (this instanceof BadRequest) {
       return 400;
     }
+    if (this instanceof Conflict) {
+      return 409;
+    }
     if (this instanceof NotFound) {
       return 404;
     }
@@ -22,8 +25,16 @@ class GeneralError extends Error {
 }
 
 class BadRequest extends GeneralError {}
+class Conflict extends GeneralError {}
 class NotFound extends GeneralError {}
 class NotUpdated extends GeneralError {}
 class Unauthorized extends GeneralError {}
 
-export { GeneralError, BadRequest, NotFound, NotUpdated, Unauthorized };
+export {
+  GeneralError,
+  Conflict,
+  BadRequest,
+  NotFound,
+  NotUpdated,
+  Unauthorized,
+};

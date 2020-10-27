@@ -1,14 +1,16 @@
 import { expect } from 'chai';
-import { match, resetHistory, stub, restore } from 'sinon';
+import { stub, restore } from 'sinon';
 import { helpers } from 'faker';
 
-import { mockReq, mockUser, res } from './mocks';
+import { mockNext, mockReq, res } from './mocks';
 
 import * as bcrypt from 'bcryptjs';
 import * as Helpers from '../../src/controllers/helpers';
-import { signUpService, signInService } from '../../src/services/auth';
 
-describe('src/controllers/auth', () => {
+import { signIn, signUp } from '../../src/controllers/auth';
+import chalk from 'chalk';
+
+describe(chalk.yellow('src/controllers/auth'), () => {
   const { username, email, name } = helpers.createCard();
 
   const req = {
@@ -18,81 +20,98 @@ describe('src/controllers/auth', () => {
       password: name,
     },
     ...mockReq,
+    userInteractor: {
+      getUser: stub().resolves(true),
+      newUser: stub().resolves(true),
+    },
   };
 
-  context('creates new user', () => {
-    after(resetHistory);
+  let buildUserObjectResponseStub;
+  let sendStub;
 
-    it('called User.create', async () => {
-      await signUpService(req, res);
+  before(async () => {
+    buildUserObjectResponseStub = stub(Helpers, 'buildUserObjectResponse');
+    sendStub = stub(Helpers, 'send');
+  });
 
-      expect(mockUser.create).to.have.been.calledWith(
-        match({
-          username,
-          email,
-        }),
-      );
+  context('successful sign up', () => {
+    before(async () => {
+      await signUp(req, res, mockNext);
+    });
+
+    after(restore);
+
+    it('called userInteractor.newUser', async () => {
+      expect(req.userInteractor.newUser).to.have.been.calledWith({
+        username,
+        email,
+        password: name,
+        roles: ['user'],
+      });
+    });
+
+    it('called send', async () => {
+      expect(sendStub).to.have.been.called;
+    });
+
+    it('called buildUserObjectResponseStub', async () => {
+      expect(buildUserObjectResponseStub).to.have.been.called;
+    });
+
+    it('called next', async () => {
+      expect(mockNext).to.have.been.called;
     });
   });
 
-  context('signs in', () => {
+  context('successful signin', () => {
     let bcryptStub;
-    let validStub;
-
     before(async () => {
       bcryptStub = stub(bcrypt.default, 'compareSync').returns(true);
-      validStub = stub(Helpers, 'validPass');
-      await signInService(req, res);
+      await signIn(req, res, mockNext);
     });
 
     after(restore);
 
-    it('called User.findByLogin', async () => {
-      expect(mockUser.findByLogin).to.have.been.calledWith(match(username));
+    it('calls userInteractor.getUser', () => {
+      expect(req.userInteractor.getUser).to.have.been.calledWith({
+        email,
+        username,
+      });
     });
 
-    it('called bcrypt.compareSync', async () => {
+    it('calls bcryptStub', () => {
       expect(bcryptStub).to.have.been.called;
     });
-    xit('called validPass', async () => {
-      expect(validStub).to.have.been.called;
+
+    it('called send', async () => {
+      expect(sendStub).to.have.been.called;
+    });
+
+    it('called buildUserObjectResponseStub', async () => {
+      expect(buildUserObjectResponseStub).to.have.been.called;
+    });
+
+    it('called next', async () => {
+      expect(mockNext).to.have.been.called;
     });
   });
 
-  xcontext('unsuccessful signin', () => {
-    let invalidStub;
-
+  context('unsuccessful signin', () => {
     before(async () => {
       stub(bcrypt.default, 'compareSync').returns(false);
-      invalidStub = stub(Helpers, 'invalidPass');
-      await signInService(req, res);
+      await signIn(req, res, mockNext);
     });
 
     after(restore);
 
-    it('called invalidPass', async () => {
-      expect(invalidStub).to.have.been.called;
+    it('throws Unauthorized error and passes to next', async () => {
+      try {
+        await signIn(req, res, mockNext);
+      } catch (e) {
+        e.should.be.Unauthorized();
+        e.should.have.value('message', 'Invalid Password');
+        expect(mockNext).to.have.been.calledWith(e);
+      }
     });
   });
-  // context('user exists', () => {
-  //   before(async () => {
-  //     fakeUser.update.resolves(fakeUser);
-  //     User.findOne.resolves(fakeUser);
-  //     result = await save({ id, ...data });
-  //   });
-
-  //   after(resetHistory);
-
-  //   it('called User.findOne', () => {
-  //     expect(User.findOne).to.have.been.calledWith(match({ where: { id } }));
-  //   });
-
-  //   it('called user.update', () => {
-  //     expect(fakeUser.update).to.have.been.calledWith(match(data));
-  //   });
-
-  //   it('returned the user', () => {
-  //     expect(result).to.deep.equal(fakeUser);
-  //   });
-  // });
 });

@@ -7,8 +7,7 @@ import cors from 'cors';
 import db from '../database/models';
 import routes from './routes';
 
-import { hashSync } from 'bcryptjs';
-import handleErrors from './middleware/handleError';
+import { handleErrors, setInteractor } from './middleware';
 
 const app = express();
 
@@ -42,6 +41,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
+app.use(setInteractor);
 app.use('/session', routes.session);
 app.use('/users', routes.user);
 app.use('/holidays', routes.holiday);
@@ -83,7 +83,7 @@ const initialize = async () => {
       {
         username: process.env.ADMIN_1,
         email: process.env.ADMIN_1_EMAIL,
-        password: hashSync(process.env.ADMIN_1_PASS, 8),
+        password: process.env.ADMIN_1_PASS,
         Holidays: [
           {
             from: '2020-10-20',
@@ -91,7 +91,7 @@ const initialize = async () => {
           },
         ],
       },
-      { include: [Holiday, Role] },
+      { include: [Holiday] },
     ).then(user => user.setRoles([2]));
 
     await HolidayRequest.create({
@@ -104,7 +104,7 @@ const initialize = async () => {
       {
         username: process.env.ADMIN_2,
         email: process.env.ADMIN_2_EMAIL,
-        password: hashSync(process.env.ADMIN_2_PASS, 8),
+        password: process.env.ADMIN_2_PASS,
         Holidays: [
           {
             from: '2020-11-20',
@@ -112,7 +112,7 @@ const initialize = async () => {
           },
         ],
       },
-      { include: [Holiday, Role] },
+      { include: [Holiday] },
     ).then(user => user.setRoles([2]));
 
     await HolidayRequest.create({
@@ -125,7 +125,7 @@ const initialize = async () => {
       {
         username: 'user',
         email: 'user@ridgewell.co.uk',
-        password: hashSync('000000', 8),
+        password: '000000',
         Holidays: [
           {
             from: '2020-10-20',
@@ -133,8 +133,8 @@ const initialize = async () => {
           },
         ],
       },
-      { include: [Holiday, Role] },
-    );
+      { include: [Holiday] },
+    ).then(user => user.setRoles([1]));
 
     await HolidayRequest.create({
       type: 'new',
@@ -146,7 +146,7 @@ const initialize = async () => {
       {
         username: 'user1',
         email: 'user1@ridgewell.co.uk',
-        password: hashSync('000000', 8),
+        password: '000000',
         Holidays: [
           {
             from: '2020-11-15',
@@ -154,7 +154,7 @@ const initialize = async () => {
           },
         ],
       },
-      { include: [Holiday, Role] },
+      { include: [Holiday] },
     );
 
     await HolidayRequest.create({
@@ -175,12 +175,12 @@ const initialize = async () => {
     await User.create({
       username: 'user2',
       email: 'user2@ridgewell.co.uk',
-      password: hashSync('000000', 8),
+      password: '000000',
     });
     await User.create({
       username: 'user3',
       email: 'user3@ridgewell.co.uk',
-      password: hashSync('000000', 8),
+      password: '000000',
     });
   } catch (error) {
     console.log('[error]', error);

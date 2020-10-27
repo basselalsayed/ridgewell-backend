@@ -1,19 +1,32 @@
-import { UserInteractor } from '../utils/interactors';
 import { compareSync } from 'bcryptjs';
 import { Unauthorized } from '../utils/errors';
 import { buildUserObjectResponse, send } from './helpers';
 
-import { signUpService } from '../services/auth';
+const signUp = async (req, res, next) => {
+  const {
+    body: { username, email, roles = ['user'], password },
+    userInteractor,
+  } = req;
 
-const userInteractor = new UserInteractor();
+  try {
+    const user = await userInteractor.newUser({
+      username,
+      email,
+      roles,
+      password,
+    });
 
-const signUp = async (req, res) => {
-  await signUpService(req, res);
+    send(200, res, buildUserObjectResponse(user));
+    next();
+  } catch (error) {
+    next(error);
+  }
 };
 
 const signIn = async (req, res, next) => {
   const {
     body: { username, email, password },
+    userInteractor,
   } = req;
 
   try {

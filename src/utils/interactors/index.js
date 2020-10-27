@@ -1,4 +1,2 @@
-import { Interactor } from './Interactor';
-import { UserInteractor } from './UserInteractor';
-
-export { Interactor, UserInteractor };
+export * from './Interactor';
+export * from './UserInteractor';
