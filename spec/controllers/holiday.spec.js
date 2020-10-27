@@ -57,7 +57,7 @@ describe('src/services/holiday', () => {
     });
   });
 
-  context('allHolidaysService [Error]', () => {
+  xcontext('allHolidaysService [Error]', () => {
     let handleErrorStub;
     before(() => {
       handleErrorStub = stub(Helpers, 'handleError');
@@ -94,7 +94,7 @@ describe('src/services/holiday', () => {
     });
   });
 
-  context('getHolidayService [Error]', () => {
+  xcontext('getHolidayService [Error]', () => {
     let handleErrorStub;
     before(() => {
       handleErrorStub = stub(Helpers, 'handleError');
@@ -140,7 +140,7 @@ describe('src/services/holiday', () => {
     });
   });
 
-  context('updateHolidayService [Error]', () => {
+  xcontext('updateHolidayService [Error]', () => {
     let handleErrorStub;
     before(() => {
       handleErrorStub = stub(Helpers, 'handleError');
@@ -226,7 +226,7 @@ describe('src/services/holiday', () => {
     });
   });
 
-  context('newHolidayService [Error]', () => {
+  xcontext('newHolidayService [Error]', () => {
     let handleErrorStub;
     before(async () => {
       handleErrorStub = stub(Helpers, 'handleError');
@@ -274,7 +274,7 @@ describe('src/services/holiday', () => {
     });
   });
 
-  context('deleteHolidayService [Error]', () => {
+  xcontext('deleteHolidayService [Error]', () => {
     let handleErrorStub;
     before(() => {
       handleErrorStub = stub(Helpers, 'handleError');
