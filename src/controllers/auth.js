@@ -3,11 +3,10 @@ import { compareSync } from 'bcryptjs';
 import { Unauthorized } from '../utils/errors';
 import { buildUserObjectResponse, send } from './helpers';
 
-const userInteractor = new UserInteractor();
-
 const signUp = async (req, res, next) => {
   const {
     body: { username, email, roles = ['user'], password },
+    userInteractor,
   } = req;
 
   try {
@@ -28,6 +27,7 @@ const signUp = async (req, res, next) => {
 const signIn = async (req, res, next) => {
   const {
     body: { username, email, password },
+    userInteractor,
   } = req;
 
   try {

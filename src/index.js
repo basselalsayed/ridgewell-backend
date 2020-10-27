@@ -7,8 +7,7 @@ import cors from 'cors';
 import db from '../database/models';
 import routes from './routes';
 
-import { hashSync } from 'bcryptjs';
-import handleErrors from './middleware/handleError';
+import { handleErrors, setInteractor } from './middleware';
 
 const app = express();
 
@@ -42,6 +41,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
+app.use(setInteractor);
 app.use('/session', routes.session);
 app.use('/users', routes.user);
 app.use('/holidays', routes.holiday);
@@ -134,7 +134,7 @@ const initialize = async () => {
         ],
       },
       { include: [Holiday] },
-    );
+    ).then(user => user.setRoles([1]));
 
     await HolidayRequest.create({
       type: 'new',
