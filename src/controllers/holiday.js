@@ -1,14 +1,14 @@
 import {
-  getHolidayService,
   updateHolidayService,
   newHolidayService,
   deleteHolidayService,
 } from '../services/holiday';
+import { NotFound } from '../utils/errors';
 import { send } from './helpers';
 
-const getAll = async (req, res, next) => {
+const getAll = async ({ holidayInteractor }, res, next) => {
   try {
-    const holidays = await req.holidayInteractor.getAll();
+    const holidays = await holidayInteractor.getAll();
 
     if (holidays) send(200, res, holidays);
     next();
@@ -17,8 +17,21 @@ const getAll = async (req, res, next) => {
   }
 };
 
-const getOne = async (req, res, next) =>
-  await getHolidayService(req, res, next);
+const getOne = async (
+  { holidayInteractor, params: { holidayId } },
+  res,
+  next,
+) => {
+  try {
+    const holiday = await holidayInteractor.getOne(holidayId);
+
+    if (!holiday) throw new NotFound('No Holiday Found');
+    send(200, res, holiday);
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
 
 const updateHoliday = async (req, res) => await updateHolidayService(req, res);
 
