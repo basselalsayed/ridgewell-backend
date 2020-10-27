@@ -1,4 +1,3 @@
-import Holiday from '../../../database/models/Holiday';
 import { Interactor } from './Interactor';
 
 class HolidayInteractor extends Interactor {
@@ -6,7 +5,7 @@ class HolidayInteractor extends Interactor {
     super();
   }
 
-  async getAllHolidays() {
+  async getAll() {
     return await this.sequelize.transaction(
       async () =>
         await this.Holiday.findAll({
@@ -26,10 +25,3 @@ class HolidayInteractor extends Interactor {
 }
 
 export { HolidayInteractor };
-
-let holidayInteractor = new HolidayInteractor();
-
-(async function () {
-  const holiday = await holidayInteractor.getAllHolidays();
-  console.log(holiday);
-})();

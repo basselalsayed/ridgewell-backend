@@ -1,14 +1,24 @@
 import {
-  allHolidaysService,
   getHolidayService,
   updateHolidayService,
   newHolidayService,
   deleteHolidayService,
 } from '../services/holiday';
+import { send } from './helpers';
 
-const getAll = async (req, res) => await allHolidaysService(req, res);
+const getAll = async (req, res, next) => {
+  try {
+    const holidays = await req.holidayInteractor.getAll();
 
-const getOne = async (req, res) => await getHolidayService(req, res);
+    if (holidays) send(200, res, { holidays });
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getOne = async (req, res, next) =>
+  await getHolidayService(req, res, next);
 
 const updateHoliday = async (req, res) => await updateHolidayService(req, res);
 
