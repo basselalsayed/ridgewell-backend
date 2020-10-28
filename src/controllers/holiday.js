@@ -43,7 +43,19 @@ const updateHoliday = async (
   }
 };
 
-const newHoliday = async (req, res) => await newHolidayService(req, res);
+const newHoliday = async (
+  { body: { from, until }, holidayInteractor, userId },
+  res,
+  next,
+) => {
+  try {
+    const holiday = await holidayInteractor.newHoliday(from, until, userId);
+
+    send(200, res, { message: 'success', holiday });
+  } catch (error) {
+    next(error);
+  }
+};
 
 const deleteHoliday = async (req, res) => await deleteHolidayService(req, res);
 
