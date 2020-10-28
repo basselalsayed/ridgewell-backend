@@ -1,4 +1,4 @@
-import { NotUpdated } from '../errors';
+import { Conflict, NotUpdated } from '../errors';
 import { Interactor } from './Interactor';
 
 class HolidayInteractor extends Interactor {
@@ -30,6 +30,7 @@ class HolidayInteractor extends Interactor {
       async transaction => await this.Holiday.findByPk(id, { transaction }),
     );
   }
+
   async update(content, id) {
     return await this.sequelize.transaction(async transaction => {
       const response = await this.Holiday.update(
@@ -42,6 +43,52 @@ class HolidayInteractor extends Interactor {
 
       if (response && response[0] > 0) return response;
       else throw new NotUpdated('Nothing was updated');
+    });
+  }
+
+  async newHoliday(from, until, userId) {
+    const { Op } = this.Sequelize;
+
+    const where = {
+      [Op.or]: [
+        {
+          from: {
+            [Op.between]: [from, until],
+          },
+        },
+        {
+          until: {
+            [Op.between]: [from, until],
+          },
+        },
+      ],
+    };
+
+    return await this.sequelize.transaction(async transaction => {
+      const response = await this.Holiday.findAll({ transaction, where });
+
+      if (response.length === 2)
+        throw new Conflict('Two Staff on Holiday already');
+
+      return await this.Holiday.create(
+        {
+          from,
+          until,
+          userId,
+          holidayRequests: [
+            {
+              type: 'new',
+              from,
+              userId,
+              until,
+            },
+          ],
+        },
+        {
+          include: [this.HolidayRequest],
+          transaction,
+        },
+      );
     });
   }
 }
