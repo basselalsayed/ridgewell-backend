@@ -1,4 +1,4 @@
-import { NotFound } from '../errors';
+import { NotUpdated } from '../errors';
 import { Interactor } from './Interactor';
 
 class HolidayInteractor extends Interactor {
@@ -8,7 +8,7 @@ class HolidayInteractor extends Interactor {
 
   async getAll() {
     return await this.sequelize.transaction(
-      async () =>
+      async transaction =>
         await this.Holiday.findAll({
           include: [
             {
@@ -20,14 +20,29 @@ class HolidayInteractor extends Interactor {
               attributes: ['username', 'email'],
             },
           ],
+          transaction,
         }),
     );
   }
 
   async getOne(id) {
     return await this.sequelize.transaction(
-      async () => await this.Holiday.findByPk(id),
+      async transaction => await this.Holiday.findByPk(id, { transaction }),
     );
+  }
+  async update(content, id) {
+    return await this.sequelize.transaction(async transaction => {
+      const response = await this.Holiday.update(
+        { ...content },
+        {
+          transaction,
+          where: { id },
+        },
+      );
+
+      if (response && response[0] > 0) return response;
+      else throw new NotUpdated('Nothing was updated');
+    });
   }
 }
 
