@@ -1,8 +1,4 @@
-import {
-  updateHolidayService,
-  newHolidayService,
-  deleteHolidayService,
-} from '../services/holiday';
+import { newHolidayService, deleteHolidayService } from '../services/holiday';
 import { NotFound } from '../utils/errors';
 import { send } from './helpers';
 
@@ -33,7 +29,19 @@ const getOne = async (
   }
 };
 
-const updateHoliday = async (req, res) => await updateHolidayService(req, res);
+const updateHoliday = async (
+  { body, holidayInteractor, params: { holidayId } },
+  res,
+  next,
+) => {
+  try {
+    await holidayInteractor.update(body, holidayId);
+
+    send(200, res, { message: 'Success' });
+  } catch (error) {
+    next(error);
+  }
+};
 
 const newHoliday = async (req, res) => await newHolidayService(req, res);
 
