@@ -1,23 +1,18 @@
 import { verify } from 'jsonwebtoken';
-import { Unauthorized } from '../utils/errors';
+import { Forbidden, Unauthorized } from '../utils/errors';
 
 const verifyToken = (req, res, next) => {
   let token = req.headers['x-access-token'];
 
-  !token &&
-    res.status(403).send({
-      message: 'No token provided!',
-    });
+  if (!token) throw new Forbidden('No token provided');
 
   verify(token, process.env.MY_SECRET, (err, decoded) => {
-    err &&
-      res.status(401).send({
-        message: 'Unauthorized!',
-      });
+    if (err) throw new Unauthorized('Unauthorized');
 
     req.userId = decoded.id;
-    next();
   });
+
+  next();
 };
 
 const isAdmin = async ({ userInteractor, userId }, res, next) => {
