@@ -1,6 +1,4 @@
-import { cyanBright } from 'chalk';
 import { verify } from 'jsonwebtoken';
-import db from '../../database/models';
 import { Unauthorized } from '../utils/errors';
 
 const verifyToken = (req, res, next) => {
@@ -22,9 +20,9 @@ const verifyToken = (req, res, next) => {
   });
 };
 
-const isAdmin = async ({ userInteractor }, res, next) => {
+const isAdmin = async ({ userInteractor, userId }, res, next) => {
   try {
-    const user = await userInteractor.getOneById(req.userId);
+    const user = await userInteractor.getOneById(userId);
 
     user.Roles.forEach(role => {
       if (role.name !== 'admin') throw new Unauthorized('Require Admin Role');
