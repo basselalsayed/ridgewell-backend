@@ -8,6 +8,9 @@ class GeneralError extends Error {
     if (this instanceof BadRequest) {
       return 400;
     }
+    if (this instanceof Forbidden) {
+      return 403;
+    }
     if (this instanceof Conflict) {
       return 409;
     }
@@ -26,6 +29,7 @@ class GeneralError extends Error {
 
 class BadRequest extends GeneralError {}
 class Conflict extends GeneralError {}
+class Forbidden extends GeneralError {}
 class NotFound extends GeneralError {}
 class NotUpdated extends GeneralError {}
 class Unauthorized extends GeneralError {}
@@ -33,6 +37,7 @@ class Unauthorized extends GeneralError {}
 export {
   GeneralError,
   Conflict,
+  Forbidden,
   BadRequest,
   NotFound,
   NotUpdated,
