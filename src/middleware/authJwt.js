@@ -1,7 +1,7 @@
+import { cyanBright } from 'chalk';
 import { verify } from 'jsonwebtoken';
 import db from '../../database/models';
-
-const { User } = db.sequelize.models;
+import { Unauthorized } from '../utils/errors';
 
 const verifyToken = (req, res, next) => {
   let token = req.headers['x-access-token'];
@@ -22,31 +22,35 @@ const verifyToken = (req, res, next) => {
   });
 };
 
-const isAdmin = (req, res, next) => {
-  User.findByPk(req.userId).then(user =>
-    user
-      .getRoles()
-      .then(roles => {
-        roles.forEach(role =>
-          role.name === 'admin'
-            ? next()
-            : res.status(403).send({
-                message: 'Require Admin Role!',
-              }),
-        );
-      })
-      .catch(err =>
-        res.status(403).send({
-          message: err.message,
-        }),
-      ),
-  );
+const isAdmin = async ({ userInteractor }, res, next) => {
+  try {
+    const user = await userInteractor.getOneById(req.userId);
+
+    user.Roles.forEach(role => {
+      if (role.name !== 'admin') throw new Unauthorized('Require Admin Role');
+
+      next();
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
-const isOwner = (req, res, next) => {
-  req.params.holidayId == req.userId
-    ? next()
-    : res.status(403).send('Require Owner or Admin Role');
+const isOwner = async (
+  { body: { holidayId }, holidayInteractor, userId },
+  res,
+  next,
+) => {
+  try {
+    const holiday = await holidayInteractor.getOne(holidayId);
+
+    if (holiday.userId !== userId)
+      throw new Unauthorized('Require Owner or Admin Role');
+
+    next();
+  } catch (error) {
+    next(error);
+  }
 };
 
 export { verifyToken, isAdmin, isOwner };
