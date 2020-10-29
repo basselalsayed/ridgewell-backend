@@ -1,30 +1,34 @@
 'use strict';
 
 export default (sequelize, DataTypes) => {
-  const Holiday = sequelize.define('Holiday', {
-    from: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
+  const Holiday = sequelize.define(
+    'Holiday',
+    {
+      from: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
+      },
+      until: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
+      },
+      confirmed: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
       },
     },
-    until: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
-    },
-    confirmed: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
-    },
-  });
+    { paranoid: true },
+  );
 
   Holiday.associate = ({ HolidayRequest, User }) => {
     Holiday.hasMany(HolidayRequest, {
