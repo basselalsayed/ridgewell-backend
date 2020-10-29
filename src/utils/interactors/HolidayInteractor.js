@@ -91,6 +91,17 @@ class HolidayInteractor extends Interactor {
       );
     });
   }
+
+  async deleteHoliday(id) {
+    return await this.sequelize.transaction(async transaction => {
+      const response = await this.Holiday.destroy({
+        transaction,
+        where: { id },
+      });
+
+      if (response < 1) throw new NotUpdated('Nothing was deleted');
+    });
+  }
 }
 
 export { HolidayInteractor };
