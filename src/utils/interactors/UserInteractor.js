@@ -1,6 +1,5 @@
 import { Interactor } from './Interactor';
-import { verifyRole } from '../../controllers/helpers';
-import { Conflict } from '../errors';
+import { Conflict, NotFound } from '../errors';
 
 class UserInteractor extends Interactor {
   constructor() {
@@ -9,12 +8,15 @@ class UserInteractor extends Interactor {
 
   async checkUsernameExists(username) {
     return await this.sequelize.transaction(
-      async () =>
-        await this.User.findOne({
-          where: {
-            username,
+      async transaction =>
+        await this.User.findOne(
+          {
+            where: {
+              username,
+            },
           },
-        }).then(user => {
+          { transaction },
+        ).then(user => {
           if (user) throw new Conflict('Failed. Username already in use.');
         }),
     );
@@ -22,12 +24,15 @@ class UserInteractor extends Interactor {
 
   async checkEmailExists(email) {
     return await this.sequelize.transaction(
-      async () =>
-        await this.User.findOne({
-          where: {
-            email,
+      async transaction =>
+        await this.User.findOne(
+          {
+            where: {
+              email,
+            },
           },
-        }).then(user => {
+          { transaction },
+        ).then(user => {
           if (user) throw new Conflict('Failed. Email already in use.');
         }),
     );
@@ -36,23 +41,35 @@ class UserInteractor extends Interactor {
   async getUser({ username, email }) {
     const login = username || email;
 
-    return await this.sequelize.transaction(async () =>
-      this.User.findByLogin(login),
-    );
+    return await this.User.findByLogin(login);
   }
 
   async newUser({ username, email, password, roles }) {
-    return await this.sequelize.transaction(async () => {
-      const user = await this.User.create({
-        username,
-        email,
-        password,
+    await this.sequelize.transaction(async transaction => {
+      const user = await this.User.create(
+        {
+          username,
+          email,
+          password,
+        },
+        { transaction },
+      );
+
+      const dbRoles = await this.Role.findAll({
+        where: {
+          name: {
+            [this.Sequelize.Op.or]: roles,
+          },
+        },
+        transaction,
       });
 
-      await verifyRole(user, roles);
+      if (dbRoles.length < 1)
+        throw new NotFound('Role does not exist in database');
 
-      return await this.getUser({ username });
+      await user.setRoles(dbRoles, { transaction });
     });
+    return await this.getUser({ username });
   }
 }
 
