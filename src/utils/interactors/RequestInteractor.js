@@ -20,6 +20,20 @@ class RequestInteractor extends Interactor {
         ),
     );
   }
+
+  async newDelete(holidayId, owner) {
+    return await this.sequelize.transaction(
+      async transaction =>
+        await this.HolidayRequest.create(
+          {
+            holidayId,
+            type: 'delete',
+            owner,
+          },
+          { transaction },
+        ),
+    );
+  }
 }
 
 export { RequestInteractor };
