@@ -18,28 +18,21 @@ const getAllRequests = async (req, res) =>
     }),
   });
 
-const newUpdateRequest = async (req, res) =>
-  (await holidayExists(req))
-    ? send(200, res, {
-        request: await req.context.models.HolidayRequest.create({
-          holidayId: req.params.holidayId,
-          type: 'update',
-          from: req.body.from,
-          until: req.body.until,
-          owner: req.userId,
-        }),
-      })
-    : noHoliday(res);
+const newRequest = async (
+  { body: { from, holidayId, type, until }, requestInteractor, userId },
+  res,
+  next,
+) => {
+  try {
+    const request =
+      type === 'update'
+        ? await requestInteractor.newUpdate(from, holidayId, until, userId)
+        : await requestInteractor.newDelete(holidayId, userId);
 
-const newDeleteRequest = async (req, res) =>
-  (await holidayExists(req))
-    ? send(200, res, {
-        request: await req.context.models.HolidayRequest.create({
-          holidayId: req.params.holidayId,
-          type: 'delete',
-          owner: req.userId,
-        }),
-      })
-    : noHoliday(res);
+    send(200, res, { message: 'Success', request });
+  } catch (error) {
+    next(error);
+  }
+};
 
-export { getAllRequests, newUpdateRequest, newDeleteRequest };
+export { getAllRequests, newRequest };
