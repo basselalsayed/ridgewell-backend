@@ -69,22 +69,24 @@ export default (sequelize, DataTypes) => {
     });
   };
 
-  User.findByLogin = async login => {
-    const user = await User.findOne({
-      where: {
-        [Op.or]: [{ username: login }, { email: login }],
-      },
-      include: [
-        {
-          association: 'Roles',
-          attributes: ['name'],
+  User.findByLogin = async login =>
+    await sequelize.transaction(async transaction => {
+      const user = await User.findOne({
+        where: {
+          [Op.or]: [{ username: login }, { email: login }],
         },
-      ],
-    });
+        include: [
+          {
+            association: 'Roles',
+            attributes: ['name'],
+          },
+        ],
+        transaction,
+      });
 
-    if (!user) throw new NotFound('No User Found');
-    else return user;
-  };
+      if (!user) throw new NotFound('No User Found');
+      return user;
+    });
 
   return User;
 };

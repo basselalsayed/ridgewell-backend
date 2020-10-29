@@ -1,19 +1,73 @@
-import {
-  allHolidaysService,
-  getHolidayService,
-  updateHolidayService,
-  newHolidayService,
-  deleteHolidayService,
-} from '../services/holiday';
+import { NotFound } from '../utils/errors';
+import { send } from './helpers';
 
-const getAll = async (req, res) => await allHolidaysService(req, res);
+const getAll = async ({ holidayInteractor }, res, next) => {
+  try {
+    const holidays = await holidayInteractor.getAll();
 
-const getOne = async (req, res) => await getHolidayService(req, res);
+    if (holidays) send(200, res, holidays);
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
 
-const updateHoliday = async (req, res) => await updateHolidayService(req, res);
+const getOne = async (
+  { holidayInteractor, params: { holidayId } },
+  res,
+  next,
+) => {
+  try {
+    const holiday = await holidayInteractor.getOne(holidayId);
 
-const newHoliday = async (req, res) => await newHolidayService(req, res);
+    if (!holiday) throw new NotFound('No Holiday Found');
+    send(200, res, holiday);
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
 
-const deleteHoliday = async (req, res) => await deleteHolidayService(req, res);
+const updateHoliday = async (
+  { body, holidayInteractor, params: { holidayId } },
+  res,
+  next,
+) => {
+  try {
+    await holidayInteractor.update(body, holidayId);
+
+    send(200, res, { message: 'Success' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const newHoliday = async (
+  { body: { from, until }, holidayInteractor, userId },
+  res,
+  next,
+) => {
+  try {
+    const holiday = await holidayInteractor.newHoliday(from, until, userId);
+
+    send(200, res, { message: 'Success', holiday });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteHoliday = async (
+  { holidayInteractor, params: { holidayId } },
+  res,
+  next,
+) => {
+  try {
+    await holidayInteractor.deleteHoliday(holidayId);
+
+    send(200, res, { message: 'Success' });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export { deleteHoliday, getAll, getOne, newHoliday, updateHoliday };
