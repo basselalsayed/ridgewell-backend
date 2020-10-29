@@ -1,12 +1,13 @@
-import { HolidayInteractor, UserInteractor } from '../utils/interactors';
-
-const includes = (req, path) => req.path.includes(path);
+import {
+  HolidayInteractor,
+  RequestInteractor,
+  UserInteractor,
+} from '../utils/interactors';
 
 const setInteractor = async (req, res, next) => {
-  if (includes(req, 'session') || includes(req, 'users'))
-    req.userInteractor = new UserInteractor();
-  if (includes(req, 'holidays'))
-    req.holidayInteractor = new HolidayInteractor();
+  req.userInteractor = new UserInteractor();
+  req.holidayInteractor = new HolidayInteractor();
+  req.requestInteractor = new RequestInteractor();
 
   next();
 };
