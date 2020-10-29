@@ -1,4 +1,3 @@
-import { newHolidayService, deleteHolidayService } from '../services/holiday';
 import { NotFound } from '../utils/errors';
 import { send } from './helpers';
 
@@ -51,12 +50,24 @@ const newHoliday = async (
   try {
     const holiday = await holidayInteractor.newHoliday(from, until, userId);
 
-    send(200, res, { message: 'success', holiday });
+    send(200, res, { message: 'Success', holiday });
   } catch (error) {
     next(error);
   }
 };
 
-const deleteHoliday = async (req, res) => await deleteHolidayService(req, res);
+const deleteHoliday = async (
+  { holidayInteractor, params: { holidayId } },
+  res,
+  next,
+) => {
+  try {
+    await holidayInteractor.deleteHoliday(holidayId);
+
+    send(200, res, { message: 'Success' });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export { deleteHoliday, getAll, getOne, newHoliday, updateHoliday };
