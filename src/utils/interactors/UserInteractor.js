@@ -44,6 +44,21 @@ class UserInteractor extends Interactor {
     return await this.User.findByLogin(login);
   }
 
+  async getOneById(id) {
+    return await this.sequelize.transaction(
+      async transaction =>
+        await this.User.findByPk(id, {
+          include: [
+            {
+              association: 'Roles',
+              attributes: ['name'],
+            },
+          ],
+          transaction,
+        }),
+    );
+  }
+
   async newUser({ username, email, password, roles }) {
     await this.sequelize.transaction(async transaction => {
       const user = await this.User.create(
