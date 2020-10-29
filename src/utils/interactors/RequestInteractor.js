@@ -6,18 +6,19 @@ class RequestInteractor extends Interactor {
   }
 
   async newUpdate(from, holidayId, until, owner) {
-    return await this.sequelize.transaction(async transaction => {
-      return await this.HolidayRequest.create(
-        {
-          holidayId,
-          from,
-          type: 'update',
-          until,
-          owner,
-        },
-        { transaction },
-      );
-    });
+    return await this.sequelize.transaction(
+      async transaction =>
+        await this.HolidayRequest.create(
+          {
+            holidayId,
+            from,
+            type: 'update',
+            until,
+            owner,
+          },
+          { transaction },
+        ),
+    );
   }
 }
 
