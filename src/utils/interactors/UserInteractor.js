@@ -1,5 +1,6 @@
 import { Interactor } from './Interactor';
 import { Conflict, NotFound } from '../errors';
+import { encrypt } from '../encryption';
 
 class UserInteractor extends Interactor {
   constructor() {
@@ -12,7 +13,7 @@ class UserInteractor extends Interactor {
         await this.User.findOne(
           {
             where: {
-              username,
+              username: encrypt(username),
             },
           },
           { transaction },
@@ -28,7 +29,7 @@ class UserInteractor extends Interactor {
         await this.User.findOne(
           {
             where: {
-              email,
+              email: encrypt(email),
             },
           },
           { transaction },
@@ -41,6 +42,7 @@ class UserInteractor extends Interactor {
   async getUser({ username, email }) {
     const login = username || email;
 
+    login = encrypt(login);
     return await this.User.findByLogin(login);
   }
 
