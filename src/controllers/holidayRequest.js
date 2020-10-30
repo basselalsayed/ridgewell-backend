@@ -1,4 +1,4 @@
-import { send, holidayExists, noHoliday, handleRequest } from './helpers';
+import { send } from './helpers';
 
 const getAllRequests = async (req, res) =>
   send(200, res, {
@@ -11,8 +11,13 @@ const getAllRequests = async (req, res) =>
       include: [
         {
           model: req.context.models.User,
-          as: ['owner'],
+
           attributes: ['username', 'email'],
+        },
+        {
+          model: req.context.models.User,
+          as: 'managerId',
+          attributes: ['id', 'username', 'email'],
         },
       ],
     }),
