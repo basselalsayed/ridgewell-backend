@@ -43,6 +43,37 @@ class RequestInteractor extends Interactor {
       );
     });
   }
+
+  async confirmRequest(id, userId) {
+    return await this.sequelize.transaction(async transaction => {
+      const request = await this.HolidayRequest.findByPk(id, { transaction });
+
+      const { from, holidayId, type, until } = request;
+
+      if (type === 'update') {
+        await this.Holiday.update(
+          { from, until, confirmed: true },
+          {
+            transaction,
+            where: { id: holidayId },
+          },
+        );
+
+        await request.setManagerId(userId, { transaction });
+
+        return await request.update({ resolved: true }, { transaction });
+      }
+
+      if (type === 'delete') {
+        await this.Holiday.destroy({
+          transaction,
+          where: { id },
+        });
+
+        await this.deleteExisting(transaction, id);
+      }
+    });
+  }
 }
 
 export { RequestInteractor };
