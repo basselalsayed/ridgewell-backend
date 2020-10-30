@@ -5,6 +5,32 @@ class RequestInteractor extends Interactor {
     super();
   }
 
+  async getAll() {
+    return await this.sequelize.transaction(
+      async transaction =>
+        await this.HolidayRequest.findAll({
+          // where: { resolved: false },
+
+          attributes: {
+            exclude: ['owner'],
+          },
+          include: [
+            {
+              model: this.User,
+
+              attributes: ['username', 'email'],
+            },
+            {
+              model: this.User,
+              as: 'managerId',
+              attributes: ['id', 'username', 'email'],
+            },
+          ],
+          transaction,
+        }),
+    );
+  }
+
   async deleteExisting(transaction, holidayId) {
     await this.HolidayRequest.destroy({
       transaction,
