@@ -40,7 +40,7 @@ class UserInteractor extends Interactor {
   }
 
   async getUser({ username, email }) {
-    const login = username || email;
+    let login = username || email;
 
     login = encrypt(login);
     return await this.User.findByLogin(login);
