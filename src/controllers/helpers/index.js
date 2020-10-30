@@ -9,7 +9,13 @@ const getAccessToken = id =>
     expiresIn: 86400, // 24 hours
   });
 
-const buildUserObjectResponse = ({ email, id, Roles, username }) => {
+const buildUserObjectResponse = ({
+  email,
+  id,
+  Roles,
+  username,
+  Notifications,
+}) => {
   let accessToken = getAccessToken(id);
 
   let roles = Roles.map(role => `ROLE_${role.name.toUpperCase()}`);
@@ -22,6 +28,7 @@ const buildUserObjectResponse = ({ email, id, Roles, username }) => {
       email,
       roles,
       accessToken,
+      notifications: Notifications,
     },
   };
 };
