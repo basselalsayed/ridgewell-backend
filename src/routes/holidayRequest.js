@@ -3,24 +3,20 @@
 import { Router } from 'express';
 import { verifyToken, isAdmin, isOwner } from '../middleware';
 import {
+  confirmRequest,
+  denyRequest,
   getAllRequests,
-  newUpdateRequest,
-  newDeleteRequest,
+  newRequest,
 } from '../controllers';
-import { confirmHolidayRequest } from '../services/holidayRequest';
 
 const router = Router();
 
 router.get('/', [verifyToken, isAdmin], getAllRequests);
 
-router.post('/upd/:holidayId', [verifyToken, isOwner], newUpdateRequest);
+router.post('/', [verifyToken, isOwner], newRequest);
 
-router.put(
-  '/:requestId/confirm',
-  [verifyToken, isAdmin],
-  confirmHolidayRequest,
-);
+router.put('/:requestId/confirm', [verifyToken, isAdmin], confirmRequest);
 
-router.post('/del/:holidayId', [verifyToken, isOwner], newDeleteRequest);
+router.put('/:requestId/deny', [verifyToken, isAdmin], denyRequest);
 
 export default router;

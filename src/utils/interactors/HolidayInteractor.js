@@ -14,6 +14,17 @@ class HolidayInteractor extends Interactor {
             {
               model: this.HolidayRequest,
               attributes: ['id', 'type', 'from', 'until', 'resolved'],
+              include: [
+                {
+                  model: this.User,
+                  attributes: ['username', 'email'],
+                },
+                {
+                  model: this.User,
+                  as: 'managerId',
+                  attributes: ['id', 'username', 'email'],
+                },
+              ],
             },
             {
               model: this.User,

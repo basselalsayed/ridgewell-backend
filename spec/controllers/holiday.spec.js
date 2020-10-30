@@ -13,7 +13,7 @@ import {
   deleteHolidayService,
 } from '../../src/services/holiday';
 
-describe('src/services/holiday', () => {
+xdescribe('src/services/holiday', () => {
   const req = {
     body: { from: '1', until: '2', confirmed: true },
     params: { holidayId: 1 },
