@@ -6,6 +6,7 @@ import Sequelize, { DataTypes } from 'sequelize';
 
 import holiday from './Holiday';
 import holidayRequest from './HolidayRequest';
+import notification from './Notification';
 import role from './Role';
 import user from './User';
 
@@ -30,6 +31,7 @@ const models = {
   User: user(sequelize, DataTypes),
   Holiday: holiday(sequelize, DataTypes),
   HolidayRequest: holidayRequest(sequelize, DataTypes),
+  Notification: notification(sequelize, DataTypes),
   Role: role(sequelize, DataTypes),
 };
 

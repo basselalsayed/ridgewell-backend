@@ -43,7 +43,7 @@ export default (sequelize, DataTypes) => {
     },
   });
 
-  User.associate = ({ Holiday, HolidayRequest, Role }) => {
+  User.associate = ({ Holiday, HolidayRequest, Notification, Role }) => {
     User.hasMany(Holiday, {
       foreignKey: {
         name: 'userId',
@@ -56,6 +56,13 @@ export default (sequelize, DataTypes) => {
       as: 'owner',
       foreignKey: {
         name: 'owner',
+        allowNull: false,
+      },
+      onDelete: 'CASCADE',
+    });
+    User.hasMany(Notification, {
+      foreignKey: {
+        name: 'userId',
         allowNull: false,
       },
       onDelete: 'CASCADE',
@@ -83,6 +90,9 @@ export default (sequelize, DataTypes) => {
           {
             association: 'Roles',
             attributes: ['name'],
+          },
+          {
+            association: 'Notifications',
           },
         ],
         transaction,
