@@ -1,4 +1,3 @@
-import Holiday from '../../../database/models/Holiday';
 import { Interactor } from './Interactor';
 
 class RequestInteractor extends Interactor {
