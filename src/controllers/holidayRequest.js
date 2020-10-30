@@ -1,15 +1,5 @@
 import { send } from './helpers';
 
-const getAllRequests = async ({ requestInteractor }, res, next) => {
-  try {
-    const requests = await requestInteractor.getAll();
-
-    send(200, res, requests);
-  } catch (error) {
-    next(error);
-  }
-};
-
 const confirmRequest = async (
   { params: { requestId }, requestInteractor, userId },
   res,
@@ -23,7 +13,28 @@ const confirmRequest = async (
     next(error);
   }
 };
+const denyRequest = async (
+  { params: { requestId }, requestInteractor, userId },
+  res,
+  next,
+) => {
+  try {
+    await requestInteractor.denyRequest(requestId, userId);
 
+    send(200, res, { message: 'Success' });
+  } catch (error) {
+    next(error);
+  }
+};
+const getAllRequests = async ({ requestInteractor }, res, next) => {
+  try {
+    const requests = await requestInteractor.getAll();
+
+    send(200, res, requests);
+  } catch (error) {
+    next(error);
+  }
+};
 const newRequest = async (
   { body: { from, holidayId, type, until }, requestInteractor, userId },
   res,
@@ -40,5 +51,4 @@ const newRequest = async (
     next(error);
   }
 };
-
-export { confirmRequest, getAllRequests, newRequest };
+export { confirmRequest, denyRequest, getAllRequests, newRequest };
