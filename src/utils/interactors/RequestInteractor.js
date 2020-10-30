@@ -100,6 +100,16 @@ class RequestInteractor extends Interactor {
       }
     });
   }
+
+  async denyRequest(id, userId) {
+    return await this.sequelize.transaction(async transaction => {
+      const request = await this.HolidayRequest.findByPk(id, { transaction });
+
+      await request.setManagerId(userId, { transaction });
+
+      return await request.update({ resolved: true }, { transaction });
+    });
+  }
 }
 
 export { RequestInteractor };
