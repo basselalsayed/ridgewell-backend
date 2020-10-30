@@ -23,6 +23,20 @@ const getAllRequests = async (req, res) =>
     }),
   });
 
+const confirmRequest = async (
+  { params: { requestId }, requestInteractor, userId },
+  res,
+  next,
+) => {
+  try {
+    await requestInteractor.confirmRequest(requestId, userId);
+
+    send(200, res, { message: 'Success' });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const newRequest = async (
   { body: { from, holidayId, type, until }, requestInteractor, userId },
   res,
@@ -40,4 +54,4 @@ const newRequest = async (
   }
 };
 
-export { getAllRequests, newRequest };
+export { confirmRequest, getAllRequests, newRequest };
