@@ -31,7 +31,7 @@ class RequestInteractor extends Interactor {
     );
   }
 
-  async deleteExisting(transaction, holidayId) {
+  async _deleteExisting(transaction, holidayId) {
     await this.HolidayRequest.destroy({
       transaction,
       where: { holidayId },
@@ -40,7 +40,7 @@ class RequestInteractor extends Interactor {
 
   async newUpdate(from, holidayId, until, owner) {
     return await this.sequelize.transaction(async transaction => {
-      await this.deleteExisting(transaction, holidayId);
+      await this._deleteExisting(transaction, holidayId);
 
       return await this.HolidayRequest.create(
         {
@@ -57,7 +57,7 @@ class RequestInteractor extends Interactor {
 
   async newDelete(holidayId, owner) {
     return await this.sequelize.transaction(async transaction => {
-      await this.deleteExisting(transaction, holidayId);
+      await this._deleteExisting(transaction, holidayId);
 
       return await this.HolidayRequest.create(
         {
@@ -74,7 +74,7 @@ class RequestInteractor extends Interactor {
     return await this.sequelize.transaction(async transaction => {
       const request = await this.HolidayRequest.findByPk(id, { transaction });
 
-      const { from, holidayId, type, until } = request;
+      const { from, holidayId, type, owner, until } = request;
 
       if (type === 'update') {
         await this.Holiday.update(
@@ -87,6 +87,35 @@ class RequestInteractor extends Interactor {
 
         await request.setManagerId(userId, { transaction });
 
+        await this.Notification.create(
+          {
+            userId: owner,
+            message: 'Your request to update your holiday was approved.',
+          },
+          { transaction },
+        );
+
+        return await request.update({ resolved: true }, { transaction });
+      }
+      if (type === 'new') {
+        await this.Holiday.update(
+          { confirmed: true },
+          {
+            transaction,
+            where: { id: holidayId },
+          },
+        );
+
+        await request.setManagerId(userId, { transaction });
+
+        await this.Notification.create(
+          {
+            userId: owner,
+            message: `Your holiday from: ${from} to: ${until} was approved.`,
+          },
+          { transaction },
+        );
+
         return await request.update({ resolved: true }, { transaction });
       }
 
@@ -96,7 +125,14 @@ class RequestInteractor extends Interactor {
           where: { id },
         });
 
-        await this.deleteExisting(transaction, id);
+        await this.Notification.create(
+          {
+            userId: owner,
+            message: 'Your request to cancel your holiday was approved.',
+          },
+          { transaction },
+        );
+        await this._deleteExisting(transaction, id);
       }
     });
   }
