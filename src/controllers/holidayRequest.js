@@ -1,27 +1,14 @@
 import { send } from './helpers';
 
-const getAllRequests = async (req, res) =>
-  send(200, res, {
-    requests: await req.context.models.HolidayRequest.findAll({
-      // where: { resolved: false },
+const getAllRequests = async ({ requestInteractor }, res, next) => {
+  try {
+    const requests = await requestInteractor.getAll();
 
-      attributes: {
-        exclude: ['owner'],
-      },
-      include: [
-        {
-          model: req.context.models.User,
-
-          attributes: ['username', 'email'],
-        },
-        {
-          model: req.context.models.User,
-          as: 'managerId',
-          attributes: ['id', 'username', 'email'],
-        },
-      ],
-    }),
-  });
+    send(200, res, requests);
+  } catch (error) {
+    next(error);
+  }
+};
 
 const confirmRequest = async (
   { params: { requestId }, requestInteractor, userId },
