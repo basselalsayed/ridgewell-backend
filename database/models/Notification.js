@@ -23,10 +23,16 @@ export default (sequelize, DataTypes) => {
     { paranoid: true },
   );
 
-  Notification.associate = ({ User }) => {
+  Notification.associate = ({ HolidayRequest, User }) => {
     Notification.belongsTo(User, {
       foreignKey: {
         name: 'userId',
+        allowNull: false,
+      },
+    });
+    Notification.belongsTo(HolidayRequest, {
+      foreignKey: {
+        name: 'requestId',
         allowNull: false,
       },
     });
