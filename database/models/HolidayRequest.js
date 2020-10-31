@@ -29,7 +29,7 @@ export default (sequelize, DataTypes) => {
     { paranoid: true },
   );
 
-  HolidayRequest.associate = ({ Holiday, User }) => {
+  HolidayRequest.associate = ({ Holiday, Notification, User }) => {
     HolidayRequest.belongsTo(Holiday, {
       foreignKey: {
         name: 'holidayId',
@@ -42,12 +42,18 @@ export default (sequelize, DataTypes) => {
         allowNull: false,
       },
     });
-
     HolidayRequest.belongsToMany(User, {
       as: 'managerId',
       through: 'ApprovedRequests',
       foreignKey: 'requestId',
       otherKey: 'managerId',
+    });
+    HolidayRequest.hasMany(Notification, {
+      foreignKey: {
+        name: 'requestId',
+        allowNull: false,
+      },
+      onDelete: 'CASCADE',
     });
   };
 
