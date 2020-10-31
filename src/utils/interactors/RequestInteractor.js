@@ -70,9 +70,10 @@ class RequestInteractor extends Interactor {
     });
   }
 
-  async _sendNotification(userId, message, transaction) {
+  async _sendNotification(requestId, userId, message, transaction) {
     await this.Notification.create(
       {
+        requestId,
         userId,
         message,
       },
@@ -82,7 +83,7 @@ class RequestInteractor extends Interactor {
 
   async _handleUpdate({
     request,
-    request: { from, Holiday, until, owner },
+    request: { id, from, Holiday, until, owner },
     transaction,
     userId,
   }) {
@@ -96,6 +97,7 @@ class RequestInteractor extends Interactor {
     await request.setManagerId(userId, { transaction });
 
     await this._sendNotification(
+      id,
       owner,
       'Your request to update your holiday was approved.',
       transaction,
@@ -107,6 +109,7 @@ class RequestInteractor extends Interactor {
   async _handleNew({
     request,
     request: {
+      id,
       Holiday,
       Holiday: { from, until },
       owner,
@@ -124,6 +127,7 @@ class RequestInteractor extends Interactor {
     await request.setManagerId(userId, { transaction });
 
     await this._sendNotification(
+      id,
       owner,
       `Your holiday from: ${from} to: ${until} was approved.`,
       transaction,
@@ -148,6 +152,7 @@ class RequestInteractor extends Interactor {
     });
 
     await this._sendNotification(
+      id,
       owner,
       `Your request to cancel your holiday from: ${from} until: ${until} was approved.`,
       transaction,
