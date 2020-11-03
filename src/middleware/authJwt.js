@@ -38,7 +38,7 @@ const isOwner = async (
     const holiday = await holidayInteractor.getOne(holidayId);
 
     if (holiday.userId !== userId)
-      throw new Unauthorized('Require Owner or Admin Role');
+      throw new Unauthorized('Only owners can request changes');
 
     next();
   } catch (error) {
