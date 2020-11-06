@@ -86,11 +86,11 @@ class HolidayInteractor extends Interactor {
           from,
           until,
           userId,
-          holidayRequests: [
+          HolidayRequests: [
             {
               type: 'new',
               from,
-              userId,
+              owner: userId,
               until,
             },
           ],
