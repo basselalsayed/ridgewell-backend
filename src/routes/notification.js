@@ -6,7 +6,7 @@ import { getAllNotifications, updateNotification } from '../controllers';
 
 const router = Router();
 
-router.get('/', [verifyToken, isNotificationOwner], getAllNotifications);
+router.get('/', [verifyToken], getAllNotifications);
 
 router.put(
   '/:notificationId',

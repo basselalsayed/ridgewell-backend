@@ -1,7 +1,7 @@
 import { send } from './helpers';
 
 const getAllNotifications = async (
-  { notificationInteractor, query: { userId } },
+  { notificationInteractor, userId },
   res,
   next,
 ) => {

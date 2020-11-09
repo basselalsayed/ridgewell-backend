@@ -28,13 +28,10 @@ class NotificationInteractor extends Interactor {
 
   async update(read, id) {
     return await this.sequelize.transaction(async transaction => {
-      const response = await this.Holiday.update(
-        { read },
-        {
-          transaction,
-          where: { id },
-        },
-      );
+      const response = await this.Notification.update(read, {
+        transaction,
+        where: { id },
+      });
 
       if (response && response[0] > 0) return response;
       else throw new NotUpdated('Nothing was updated');
