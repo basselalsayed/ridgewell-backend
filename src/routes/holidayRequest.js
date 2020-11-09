@@ -11,7 +11,7 @@ import {
 
 const router = Router();
 
-router.get('/', [verifyToken, isAdmin], getAllRequests);
+router.get('/', [verifyToken], getAllRequests);
 
 router.post('/', [verifyToken, isOwner], newRequest);
 
