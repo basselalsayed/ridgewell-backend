@@ -45,7 +45,8 @@ app.use(setInteractor);
 app.use('/session', routes.session);
 app.use('/users', routes.user);
 app.use('/holidays', routes.holiday);
-app.use('/requests', routes.holidayRequest);
+app.use('/holidays', routes.holiday);
+app.use('/notifications', routes.notification);
 
 app.use(handleErrors);
 
