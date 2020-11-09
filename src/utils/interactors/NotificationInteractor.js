@@ -6,6 +6,13 @@ class NotificationInteractor extends Interactor {
     super();
   }
 
+  async getOne(id) {
+    return await this.sequelize.transaction(
+      async transaction =>
+        await this.Notification.findByPk(id, { transaction }),
+    );
+  }
+
   async getAll(userId) {
     return await this.sequelize.transaction(
       async transaction =>
