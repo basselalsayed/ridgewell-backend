@@ -53,7 +53,8 @@ class UserInteractor extends Interactor {
             },
             {
               model: this.HolidayRequest,
-              attributes: ['id', 'from', 'until', 'resolved'],
+              as: 'owner',
+              attributes: ['id', 'type', 'from', 'until', 'resolved'],
             },
           ],
           transaction,
