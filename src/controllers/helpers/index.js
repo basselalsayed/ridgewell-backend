@@ -28,7 +28,7 @@ const buildUserObjectResponse = ({
       email,
       roles,
       accessToken,
-      notifications: Notifications,
+      Notifications,
     },
   };
 };
