@@ -1,18 +1,16 @@
 import { send } from './helpers';
 
-const allAccess = async (req, res) =>
-  send(
-    200,
-    res,
-    await req.context.models.User.findAll({
-      attributes: {
-        exclude: ['password'],
-      },
-    }),
-  );
+const getAllUsers = async ({ userInteractor }, res, next) => {
+  try {
+    const response = await userInteractor.getAll();
+    send(200, res, response);
+  } catch (error) {
+    next(error);
+  }
+};
 
 const userBoard = (req, res) => send(200, res, 'User Content.');
 
 const adminBoard = (req, res) => send(200, res, 'Admin Content.');
 
-export { allAccess, userBoard, adminBoard };
+export { getAllUsers, userBoard, adminBoard };
