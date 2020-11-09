@@ -45,5 +45,16 @@ const isOwner = async (
     next(error);
   }
 };
+const isQueryOwner = async ({ query, userId }, _, next) => {
+  try {
+    if (query.userId) {
+      if (query.userId != userId)
+        throw new Unauthorized('Only owners can request their data');
+      else next();
+    } else next();
+  } catch (error) {
+    next(error);
+  }
+};
 
-export { verifyToken, isAdmin, isOwner };
+export { verifyToken, isAdmin, isQueryOwner, isOwner };
