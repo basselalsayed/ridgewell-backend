@@ -2,16 +2,16 @@
 
 import { Router } from 'express';
 import { verifyToken, isNotificationOwner } from '../middleware';
-import { getAll, updateHoliday } from '../controllers';
+import { getAllNotifications, updateNotification } from '../controllers';
 
 const router = Router();
 
-router.get('/', [verifyToken, isNotificationOwner], getAll);
+router.get('/', [verifyToken, isNotificationOwner], getAllNotifications);
 
 router.put(
   '/:notificationId',
   [verifyToken, isNotificationOwner],
-  updateHoliday,
+  updateNotification,
 );
 
 export default router;
