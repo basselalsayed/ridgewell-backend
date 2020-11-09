@@ -26,9 +26,13 @@ const denyRequest = async (
     next(error);
   }
 };
-const getAllRequests = async ({ requestInteractor }, res, next) => {
+const getAllRequests = async (
+  { requestInteractor, query: { userId } },
+  res,
+  next,
+) => {
   try {
-    const requests = await requestInteractor.getAll();
+    const requests = await requestInteractor.getAll(userId ? userId : null);
 
     send(200, res, requests);
   } catch (error) {
