@@ -16,9 +16,13 @@ class RequestInteractor extends Interactor {
           },
           include: [
             {
-              model: this.User,
+              model: this.Holiday,
 
-              attributes: ['username', 'email'],
+              attributes: ['id', 'from', 'until'],
+            },
+            {
+              model: this.User,
+              attributes: ['id', 'username', 'email'],
             },
             {
               model: this.User,
