@@ -1,9 +1,9 @@
 import { NotFound } from '../utils/errors';
 import { send } from './helpers';
 
-const getAll = async ({ holidayInteractor }, res, next) => {
+const getAll = async ({ holidayInteractor, query: { userId } }, res, next) => {
   try {
-    const holidays = await holidayInteractor.getAll();
+    const holidays = await holidayInteractor.getAll(userId ? userId : null);
 
     if (holidays) send(200, res, holidays);
     next();

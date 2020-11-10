@@ -21,14 +21,14 @@ const buildUserObjectResponse = ({
   let roles = Roles.map(role => `ROLE_${role.name.toUpperCase()}`);
 
   return {
-    message: 'Success!',
+    message: 'Success',
     user: {
       id,
       username,
       email,
       roles,
       accessToken,
-      notifications: Notifications,
+      Notifications,
     },
   };
 };

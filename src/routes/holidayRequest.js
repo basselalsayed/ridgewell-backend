@@ -1,7 +1,7 @@
 'use strict';
 
 import { Router } from 'express';
-import { verifyToken, isAdmin, isOwner } from '../middleware';
+import { verifyToken, isAdmin, isOwner, isQueryOwner } from '../middleware';
 import {
   confirmRequest,
   denyRequest,
@@ -11,7 +11,7 @@ import {
 
 const router = Router();
 
-router.get('/', [verifyToken, isAdmin], getAllRequests);
+router.get('/', [verifyToken, isQueryOwner], getAllRequests);
 
 router.post('/', [verifyToken, isOwner], newRequest);
 

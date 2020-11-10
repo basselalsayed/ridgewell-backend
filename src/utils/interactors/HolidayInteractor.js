@@ -6,10 +6,15 @@ class HolidayInteractor extends Interactor {
     super();
   }
 
-  async getAll() {
+  async getAll(userId) {
+    const where = userId ? { userId } : {};
     return await this.sequelize.transaction(
       async transaction =>
         await this.Holiday.findAll({
+          where,
+          attributes: {
+            exclude: ['userId'],
+          },
           include: [
             {
               model: this.HolidayRequest,
@@ -17,7 +22,7 @@ class HolidayInteractor extends Interactor {
               include: [
                 {
                   model: this.User,
-                  attributes: ['username', 'email'],
+                  attributes: ['id', 'username', 'email'],
                 },
                 {
                   model: this.User,
@@ -28,7 +33,7 @@ class HolidayInteractor extends Interactor {
             },
             {
               model: this.User,
-              attributes: ['username', 'email'],
+              attributes: ['id', 'username', 'email'],
             },
           ],
           transaction,

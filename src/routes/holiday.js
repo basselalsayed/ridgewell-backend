@@ -1,7 +1,7 @@
 'use strict';
 
 import { Router } from 'express';
-import { verifyToken, isAdmin } from '../middleware';
+import { verifyToken, isAdmin, isQueryOwner } from '../middleware';
 import {
   deleteHoliday,
   getAll,
@@ -12,7 +12,7 @@ import {
 
 const router = Router();
 
-router.get('/', [verifyToken], getAll);
+router.get('/', [verifyToken, isQueryOwner], getAll);
 
 router.post('/', [verifyToken], newHoliday);
 

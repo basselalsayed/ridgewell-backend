@@ -5,20 +5,25 @@ class RequestInteractor extends Interactor {
     super();
   }
 
-  async getAll() {
+  async getAll(owner) {
+    const where = owner ? { owner } : {};
     return await this.sequelize.transaction(
       async transaction =>
         await this.HolidayRequest.findAll({
           // where: { resolved: false },
-
+          where,
           attributes: {
             exclude: ['owner'],
           },
           include: [
             {
-              model: this.User,
+              model: this.Holiday,
 
-              attributes: ['username', 'email'],
+              attributes: ['id', 'from', 'until'],
+            },
+            {
+              model: this.User,
+              attributes: ['id', 'username', 'email'],
             },
             {
               model: this.User,

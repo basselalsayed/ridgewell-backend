@@ -15,8 +15,7 @@ const signUp = async (req, res, next) => {
       roles,
       password,
     });
-
-    send(200, res, buildUserObjectResponse(user));
+    if (user) send(200, res, buildUserObjectResponse(user));
     next();
   } catch (error) {
     next(error);

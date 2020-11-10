@@ -39,6 +39,29 @@ class UserInteractor extends Interactor {
     );
   }
 
+  async getAll() {
+    return await this.sequelize.transaction(
+      async transaction =>
+        await this.User.findAll({
+          attributes: {
+            exclude: ['password'],
+          },
+          include: [
+            {
+              model: this.Holiday,
+              attributes: ['id', 'from', 'until', 'confirmed'],
+            },
+            {
+              model: this.HolidayRequest,
+              as: 'owner',
+              attributes: ['id', 'type', 'from', 'until', 'resolved'],
+            },
+          ],
+          transaction,
+        }),
+    );
+  }
+
   async getUser({ username, email }) {
     let login = username || email;
 

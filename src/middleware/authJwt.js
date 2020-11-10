@@ -45,5 +45,32 @@ const isOwner = async (
     next(error);
   }
 };
+const isNotificationOwner = async (
+  { params: { notificationId }, notificationInteractor, userId },
+  res,
+  next,
+) => {
+  try {
+    const notification = await notificationInteractor.getOne(notificationId);
 
-export { verifyToken, isAdmin, isOwner };
+    if (notification.userId !== userId)
+      throw new Unauthorized('Only owners can request changes');
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+const isQueryOwner = async ({ query, userId }, _, next) => {
+  try {
+    if (query.userId) {
+      if (query.userId != userId)
+        throw new Unauthorized('Only owners can request their data');
+      else next();
+    } else next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { verifyToken, isAdmin, isNotificationOwner, isQueryOwner, isOwner };

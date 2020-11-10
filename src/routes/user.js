@@ -1,7 +1,8 @@
 'use strict';
 
 import { Router } from 'express';
-import { allAccess, userBoard, adminBoard, signUp } from '../controllers';
+import { userBoard, adminBoard, signUp, getAllUsers } from '../controllers';
+
 import {
   verifyToken,
   isAdmin,
@@ -11,7 +12,7 @@ import {
 
 const router = Router();
 
-router.get('/', [verifyToken, isAdmin], allAccess);
+router.get('/', [verifyToken, isAdmin], getAllUsers);
 
 router.post('/', [checkDuplicateUsernameOrEmail, checkRolesExist], signUp);
 
