@@ -62,7 +62,7 @@ class HolidayInteractor extends Interactor {
     });
   }
 
-  async newHoliday(from, until, userId) {
+  async newHoliday(annualLeave, from, until, userId) {
     const { Op } = this.Sequelize;
 
     const where = {
@@ -88,6 +88,7 @@ class HolidayInteractor extends Interactor {
 
       return await this.Holiday.create(
         {
+          annualLeave,
           from,
           until,
           userId,

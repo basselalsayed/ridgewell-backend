@@ -43,12 +43,17 @@ const updateHoliday = async (
 };
 
 const newHoliday = async (
-  { body: { from, until }, holidayInteractor, userId },
+  { body: { annualLeave, from, until }, holidayInteractor, userId },
   res,
   next,
 ) => {
   try {
-    const holiday = await holidayInteractor.newHoliday(from, until, userId);
+    const holiday = await holidayInteractor.newHoliday(
+      annualLeave,
+      from,
+      until,
+      userId,
+    );
 
     send(200, res, { message: 'Success', holiday });
   } catch (error) {
