@@ -7,11 +7,11 @@ export const up = async (queryInterface, Sequelize) => {
       primaryKey: true,
       type: Sequelize.INTEGER,
     },
-    type: {
-      type: Sequelize.STRING,
+    annualLeave: {
+      type: Sequelize.BOOLEAN,
       allowNull: false,
       validate: { notEmpty: true },
-      defaultValue: 'annualLeave',
+      defaultValue: true,
     },
     from: {
       allowNull: false,
