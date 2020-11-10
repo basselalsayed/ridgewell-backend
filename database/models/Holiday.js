@@ -18,6 +18,12 @@ export default (sequelize, DataTypes) => {
           notEmpty: true,
         },
       },
+      type: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: { notEmpty: true },
+        defaultValue: 'annualLeave',
+      },
       confirmed: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
