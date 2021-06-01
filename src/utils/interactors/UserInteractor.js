@@ -84,7 +84,7 @@ class UserInteractor extends Interactor {
     );
   }
 
-  async newUser({ username, email, password, roles }) {
+  async newUser({ username, email, password, roles = ['user'] }) {
     await this.sequelize.transaction(async transaction => {
       const user = await this.User.create(
         {
