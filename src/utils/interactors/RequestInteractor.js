@@ -5,7 +5,7 @@ class RequestInteractor extends Interactor {
     super();
   }
 
-  async getAll(owner) {
+  getAll = async owner => {
     const where = owner ? { owner } : {};
     return await this.sequelize.transaction(
       async transaction =>
@@ -34,17 +34,16 @@ class RequestInteractor extends Interactor {
           transaction,
         }),
     );
-  }
+  };
 
-  async _deleteExisting(transaction, holidayId) {
+  _deleteExisting = async (transaction, holidayId) =>
     await this.HolidayRequest.destroy({
       transaction,
       where: { holidayId },
     });
-  }
 
-  async newUpdate(from, holidayId, until, owner) {
-    return await this.sequelize.transaction(async transaction => {
+  newUpdate = async ({ from, holidayId, until, owner }) =>
+    await this.sequelize.transaction(async transaction => {
       await this._deleteExisting(transaction, holidayId);
 
       return await this.HolidayRequest.create(
@@ -58,10 +57,9 @@ class RequestInteractor extends Interactor {
         { transaction },
       );
     });
-  }
 
-  async newDelete(holidayId, owner) {
-    return await this.sequelize.transaction(async transaction => {
+  newDelete = async (holidayId, owner) =>
+    await this.sequelize.transaction(async transaction => {
       await this._deleteExisting(transaction, holidayId);
 
       return await this.HolidayRequest.create(
@@ -73,9 +71,8 @@ class RequestInteractor extends Interactor {
         { transaction },
       );
     });
-  }
 
-  async _sendNotification(requestId, userId, message, transaction) {
+  _sendNotification = async (requestId, userId, message, transaction) =>
     await this.Notification.create(
       {
         requestId,
@@ -84,16 +81,14 @@ class RequestInteractor extends Interactor {
       },
       { transaction },
     );
-  }
-
-  async _handleUpdate({
+  _handleUpdate = async ({
     request,
     request: { id, from, Holiday, until, owner },
     transaction,
     userId,
-  }) {
+  }) => {
     await Holiday.update(
-      { from, until, confirmed: true },
+      { from, until, confirmed: 'TRUE' },
       {
         transaction,
       },
@@ -109,9 +104,9 @@ class RequestInteractor extends Interactor {
     );
 
     return await request.update({ resolved: true }, { transaction });
-  }
+  };
 
-  async _handleNew({
+  _handleNew = async ({
     request,
     request: {
       id,
@@ -121,7 +116,7 @@ class RequestInteractor extends Interactor {
     },
     transaction,
     userId,
-  }) {
+  }) => {
     await Holiday.update(
       { confirmed: true },
       {
@@ -139,9 +134,9 @@ class RequestInteractor extends Interactor {
     );
 
     return await request.update({ resolved: true }, { transaction });
-  }
+  };
 
-  async _handleDelete({
+  _handleDelete = async ({
     request,
     request: {
       Holiday,
@@ -151,7 +146,7 @@ class RequestInteractor extends Interactor {
     },
     transaction,
     userId,
-  }) {
+  }) => {
     await Holiday.destroy({
       transaction,
     });
@@ -166,8 +161,9 @@ class RequestInteractor extends Interactor {
     await request.setManagerId(userId, { transaction });
 
     await this._deleteExisting(transaction, id);
-  }
-  async confirmRequest(id, userId) {
+  };
+
+  confirmRequest = async (id, userId) => {
     return await this.sequelize.transaction(async transaction => {
       const request = await this.HolidayRequest.findByPk(id, {
         include: {
@@ -189,17 +185,16 @@ class RequestInteractor extends Interactor {
         await this._handleDelete({ request, userId, transaction });
       }
     });
-  }
+  };
 
-  async denyRequest(id, userId) {
-    return await this.sequelize.transaction(async transaction => {
+  denyRequest = async (id, userId) =>
+    await this.sequelize.transaction(async transaction => {
       const request = await this.HolidayRequest.findByPk(id, { transaction });
 
       await request.setManagerId(userId, { transaction });
 
       return await request.update({ resolved: true }, { transaction });
     });
-  }
 }
 
 export { RequestInteractor };
