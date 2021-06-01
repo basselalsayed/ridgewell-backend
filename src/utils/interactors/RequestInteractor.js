@@ -126,6 +126,7 @@ class RequestInteractor extends Interactor {
 
     await request.setManagerId(userId, { transaction });
 
+    await request.destroy();
     await this._sendNotification(
       id,
       owner,
