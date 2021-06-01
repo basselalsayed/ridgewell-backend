@@ -6,7 +6,7 @@ class HolidayInteractor extends Interactor {
     super();
   }
 
-  async getAll(userId) {
+  getAll = async userId => {
     const where = userId ? { userId } : {};
     return await this.sequelize.transaction(
       async transaction =>
@@ -39,16 +39,15 @@ class HolidayInteractor extends Interactor {
           transaction,
         }),
     );
-  }
+  };
 
-  async getOne(id) {
-    return await this.sequelize.transaction(
+  getOne = async id =>
+    await this.sequelize.transaction(
       async transaction => await this.Holiday.findByPk(id, { transaction }),
     );
-  }
 
-  async update(content, id) {
-    return await this.sequelize.transaction(async transaction => {
+  update = async (content, id) =>
+    await this.sequelize.transaction(async transaction => {
       const response = await this.Holiday.update(
         { ...content },
         {
@@ -60,9 +59,8 @@ class HolidayInteractor extends Interactor {
       if (response && response[0] > 0) return response;
       else throw new NotUpdated('Nothing was updated');
     });
-  }
 
-  async newHoliday(annualLeave, from, until, userId) {
+  newHoliday = async (annualLeave, from, until, userId) => {
     const { Op } = this.Sequelize;
 
     const where = {
@@ -107,10 +105,10 @@ class HolidayInteractor extends Interactor {
         },
       );
     });
-  }
+  };
 
-  async deleteHoliday(id) {
-    return await this.sequelize.transaction(async transaction => {
+  deleteHoliday = async id =>
+    await this.sequelize.transaction(async transaction => {
       const response = await this.Holiday.destroy({
         transaction,
         where: { id },
@@ -118,7 +116,6 @@ class HolidayInteractor extends Interactor {
 
       if (response < 1) throw new NotUpdated('Nothing was deleted');
     });
-  }
 }
 
 export { HolidayInteractor };
