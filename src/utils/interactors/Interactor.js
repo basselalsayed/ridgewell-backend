@@ -1,4 +1,4 @@
-import db from '../../../database/models';
+import db from '../../database/models';
 
 class Interactor {
   constructor() {

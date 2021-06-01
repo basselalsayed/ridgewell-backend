@@ -1,9 +1,9 @@
 'use strict';
 
 import { Sequelize } from 'sequelize';
-import { NotFound } from '../../src/utils/errors';
+import { NotFound } from '../../utils/errors';
 import { hashSync } from 'bcryptjs';
-import { encrypt } from '../../src/utils/encryption';
+import { encrypt } from '../../utils/encryption';
 
 const { Op } = Sequelize;
 

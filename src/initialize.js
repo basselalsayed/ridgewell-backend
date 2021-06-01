@@ -1,5 +1,5 @@
-import { addDays, addWeeks } from 'date-fns';
-import db from '../database/models';
+import { addDays } from 'date-fns';
+import db from './database/models';
 import {
   HolidayInteractor,
   RequestInteractor,
