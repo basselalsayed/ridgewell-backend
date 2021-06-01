@@ -5,7 +5,7 @@ const noUser = res => send(404, res, { message: 'User not found.' });
 const invalidPass = res =>
   send(401, res, {
     accessToken: null,
-    message: 'Invalid Password!',
+    message: 'Invalid Password',
   });
 
 const validPass = (res, user) => {
