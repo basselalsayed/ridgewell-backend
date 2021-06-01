@@ -47,7 +47,12 @@ const newRequest = async (
   try {
     const request =
       type === 'update'
-        ? await requestInteractor.newUpdate(from, holidayId, until, userId)
+        ? await requestInteractor.newUpdate({
+            from,
+            holidayId,
+            until,
+            owner: userId,
+          })
         : await requestInteractor.newDelete(holidayId, userId);
 
     send(200, res, { message: 'Success', request });
