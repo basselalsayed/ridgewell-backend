@@ -51,7 +51,7 @@ app.use('/notifications', routes.notification);
 
 app.use(handleErrors);
 
-const eraseDatabaseOnSync = true;
+const eraseDatabaseOnSync = JSON.parse(process.env.ERASE);
 
 db.sequelize
   .sync({ force: eraseDatabaseOnSync, logging: false })
