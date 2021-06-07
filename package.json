@@ -8,7 +8,8 @@
     "db:drop": "sequelize db:drop",
     "db:migrate": "sequelize db:migrate",
     "db:reset": "sequelize db:drop && sequelize db:create",
-    "start": "nodemon --exec babel-node src/index.js",
+    "dev": "nodemon --exec babel-node src/index.js",
+    "start": "babel-node src/index.js",
     "test": "mocha --require @babel/register 'spec/**/**spec.js'"
   },
   "repository": {
