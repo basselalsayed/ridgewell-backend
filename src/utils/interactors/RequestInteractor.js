@@ -1,3 +1,5 @@
+import { red } from 'chalk';
+import { formatted } from '../../helpers/date';
 import { Interactor } from './Interactor';
 
 class RequestInteractor extends Interactor {
@@ -103,6 +105,8 @@ class RequestInteractor extends Interactor {
       transaction,
     );
 
+    // await request.destroy({ transaction });
+
     return await request.update({ resolved: true }, { transaction });
   };
 
@@ -126,15 +130,18 @@ class RequestInteractor extends Interactor {
 
     await request.setManagerId(userId, { transaction });
 
-    await request.destroy();
     await this._sendNotification(
       id,
       owner,
-      `Your holiday from: ${from} to: ${until} was approved.`,
+      `Your holiday from: ${formatted(from, 'panel')} to: ${formatted(
+        until,
+        'panel',
+      )} was approved.`,
       transaction,
     );
 
-    return await request.update({ resolved: true }, { transaction });
+    await request.destroy({ transaction });
+    await request.update({ resolved: true }, { transaction });
   };
 
   _handleDelete = async ({
@@ -155,7 +162,10 @@ class RequestInteractor extends Interactor {
     await this._sendNotification(
       id,
       owner,
-      `Your request to cancel your holiday from: ${from} until: ${until} was approved.`,
+      `Your request to cancel your holiday from: ${formatted(
+        from,
+        'panel',
+      )} until: ${formatted(until, 'panel')} was approved.`,
       transaction,
     );
 
@@ -194,6 +204,12 @@ class RequestInteractor extends Interactor {
 
       await request.setManagerId(userId, { transaction });
 
+      await this._sendNotification(
+        id,
+        request.owner,
+        `Your holiday request was denied.`,
+        transaction,
+      );
       return await request.update({ resolved: true }, { transaction });
     });
 }
