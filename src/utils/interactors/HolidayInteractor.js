@@ -6,12 +6,11 @@ class HolidayInteractor extends Interactor {
     super();
   }
 
-  getAll = async userId => {
-    const where = userId ? { userId } : {};
-    return await this.sequelize.transaction(
+  getAll = async userId =>
+    await this.sequelize.transaction(
       async transaction =>
         await this.Holiday.findAll({
-          where,
+          where: userId ? { userId } : {},
           attributes: {
             exclude: ['userId'],
           },
@@ -39,8 +38,6 @@ class HolidayInteractor extends Interactor {
           transaction,
         }),
     );
-  };
-
   getOne = async id =>
     await this.sequelize.transaction(
       async transaction => await this.Holiday.findByPk(id, { transaction }),

@@ -11,9 +11,17 @@ import { handleErrors, setInteractor } from './middleware';
 import initialize from './initialize';
 
 const app = express();
+app.get('/ping', (req, res) => {
+  res.send('pong');
+});
+
+const origins = process.env.ORIGINS.split(',');
 
 let corsOptions = {
-  origin: process.env.ORIGIN,
+  origin: (origin, cb) => {
+    const canPass = origins.includes(origin);
+    return cb(!canPass, origins);
+  },
 };
 
 app.use(cors(corsOptions));
@@ -36,10 +44,6 @@ app.use(async (req, res, next) => {
     // user: await models.User.findByLogin('rwieruch'),
   };
   next();
-});
-
-app.get('/', (req, res) => {
-  res.send('Hello World!');
 });
 
 app.use(setInteractor);
